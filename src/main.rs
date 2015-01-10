@@ -13,7 +13,7 @@ fn main() {
     };
 
     loop {
-        print!("{} $", cwd.as_str().unwrap());
+        print!("{} $ ", cwd.as_str().unwrap());
         let input = match io::stdio::stdin().read_line() {
             Ok(c) => {c},
             Err(f) => {panic!(f.to_string())},
@@ -24,7 +24,7 @@ fn main() {
 
         match cmd {
             "exit" => {break},
-            "cd" => {
+            "cd" => {       // does not actually change the directory (yet)
                 if args.is_empty() {    // cd called without arguments; cd ~
                     let home = match os::homedir() {
                         Some(p) => {p},
@@ -69,9 +69,13 @@ fn main() {
 }
 
 fn fork(opts: &[&str]) -> bool{
-    let test = match opts.last() {
-        Some(st) => {st},
-        None => {panic!("Oh fuck")},
-    };
-    return test == &"&";
+    if opts.len() > 0 {
+        let test = match opts.last() {
+            Some(st) => {*st},
+            None => {panic!("Oh fuck")},
+        };
+        return test == "&";
+    } else {
+        return false;
+    }
 }
