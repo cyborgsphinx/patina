@@ -24,6 +24,22 @@ fn main() {
 
         match cmd {
             "exit" => {break},
+            "cd" => {
+                if args.is_empty() {    // cd called without arguments; cd ~
+                    let home = match os::homedir() {
+                        Some(p) => {p},
+                        None => {panic!("You have no home")},   //should probably change that panic
+                    };
+                    os::change_dir(&home);
+                } else {
+                    //TODO implement flags
+                    let dir = args[0];
+                    match os::change_dir(&Path::new(dir)) {
+                        Ok(_) => {},
+                        Err(f) => {println!("cd: the directory \"{}\" does not exist", dir)}
+                    };
+                }
+            },
             _ => {
                 if fork(args) {
                     let process = Command::new(cmd).cwd(&cwd).args(args.slice_to(args.len()-1)).output();
