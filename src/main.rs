@@ -3,17 +3,27 @@ use std::io::fs;
 use std::os;
 use std::io::process::Command;
 use std::path::Path;
+use std::str;
 
 fn main() {
     println!("Hash Shell\nPrealpha");
+
+//    let mut (sin, sout, serr) = (io::stdin, io::stdout, io::stderr);  //for when I want to work
+//    with stdio, especially redirect
 
     let mut cwd = match os::getcwd(){
         Ok(p) => {p},
         Err(f) => {panic!(f.to_string())},
     };
+    let mut stat = os::get_exit_status();
 
     loop {
-        print!("{} $ ", cwd.as_str().unwrap());
+        let mut dir = match cwd.filename() {
+            Some(d) => {d},
+            None => {b"/"},
+        };
+        let mut dispdir = str::from_utf8(dir).unwrap_or("Could not find directory");
+        print!("({}){} $ ", stat, dispdir);
         let input = match io::stdio::stdin().read_line() {
             Ok(c) => {c},
             Err(f) => {panic!(f.to_string())},
@@ -33,10 +43,10 @@ fn main() {
                     os::change_dir(&home);
                 } else {
                     //TODO implement flags
-                    let dir = args[0];
-                    match os::change_dir(&Path::new(dir)) {
+                    let chdir = args[0];
+                    match os::change_dir(&Path::new(chdir)) {
                         Ok(_) => {},
-                        Err(f) => {println!("cd: the directory \"{}\" does not exist", dir)}
+                        Err(f) => {println!("cd: the directory \"{}\" does not exist", chdir)}
                     };
                 }
             },
@@ -46,7 +56,7 @@ fn main() {
 
                     match process {
                         Ok(out) => {
-                            println!("{}", String::from_utf8_lossy(out.output.as_slice()));
+                            print!("{}", String::from_utf8_lossy(out.output.as_slice()));
                         },
                         Err(f) => {
                             println!("Error: {}", f);
@@ -56,7 +66,8 @@ fn main() {
                     let process = Command::new(cmd).cwd(&cwd).args(args).output();
                     match process {
                         Ok(out) => {
-                            println!("{}", String::from_utf8_lossy(out.output.as_slice()));
+                            print!("{}", String::from_utf8_lossy(out.output.as_slice()));
+                            stat = out.status;
                         },
                         Err(f) => {
                             println!("Error: {}", f);
