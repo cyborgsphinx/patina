@@ -1,7 +1,7 @@
 use std::io;
 use std::io::fs;
 use std::os;
-use std::io::process::Command;
+use std::io::process::{Command, ProcessExit};
 use std::path::Path;
 use std::str;
 
@@ -67,7 +67,10 @@ fn main() {
                     match process {
                         Ok(out) => {
                             print!("{}", String::from_utf8_lossy(out.output.as_slice()));
-                            stat = out.status;
+                            stat = match out.status {
+                                ProcessExit::ExitStatus(val) => {val},
+                                ProcessExit::ExitSignal(val) => {val},
+                            };
                         },
                         Err(f) => {
                             println!("Error: {}", f);
@@ -77,6 +80,8 @@ fn main() {
             },
         };
     }
+    //not a fan of exiting with the same status as last-run command
+    os::set_exit_status(0);
 }
 
 fn fork(opts: &[&str]) -> bool{
