@@ -37,26 +37,13 @@ fn main() {
 
         match cmd {
             "exit" => {break},
-            "cd" => {       // does not actually change the directory (yet)
-               /* if args.is_empty() {    // cd called without arguments; cd ~
-                    let home = match os::homedir() {
-                        Some(p) => {p},
-                        None => {panic!("You have no home")},   //should probably change that panic
-                    };
-                    os::change_dir(&home);
-                } else {
-                    //TODO implement flags
-                    let chdir = args[0];
-                    match os::change_dir(&Path::new(chdir)) {
-                        Ok(_) => {},
-                        Err(f) => {println!("cd: the directory \"{}\" does not exist", chdir)}
-                    };
-                }*/
+            "cd" => {       //changes the directory the shell shows, but nothing more
+                //TODO implement flags
                 let mut chdir: Path;
-                if args.is_empty() {
+                if args.is_empty() {    //cd called alone; equivalent to cd ~
                     chdir = match os::homedir() {
                         Some(d) => {d},
-                        None => {panic!("You have no home")},   //change later
+                        None => {panic!("You have no home")},   //TODO improve
                     };
                 } else {
                     chdir = Path::new(args[0]);
