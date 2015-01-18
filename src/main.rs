@@ -5,6 +5,9 @@ use std::io::process::{Command, ProcessExit};
 use std::path::Path;
 use std::str;
 
+mod prompt;
+mod cd;
+
 fn main() {
     println!("Hash Shell\nPrealpha");
 
@@ -18,12 +21,12 @@ fn main() {
     let mut stat = os::get_exit_status();
 
     loop {
-        let mut dir = match cwd.filename() {
+        /*let mut dir = match cwd.filename() {
             Some(d) => {d},
             None => {b"/"},
         };
-        let mut dispdir = str::from_utf8(dir).unwrap_or("Could not find directory");
-        print!("({}){} $ ", stat, dispdir);
+        let mut dispdir = str::from_utf8(dir).unwrap_or("Could not find directory");*/
+        print!("{} ", prompt::get_prompt(stat));
         let input = match io::stdio::stdin().read_line() {
             Ok(c) => {c},
             Err(f) => {panic!(f.to_string())},
@@ -35,7 +38,7 @@ fn main() {
         match cmd {
             "exit" => {break},
             "cd" => {       // does not actually change the directory (yet)
-                if args.is_empty() {    // cd called without arguments; cd ~
+               /* if args.is_empty() {    // cd called without arguments; cd ~
                     let home = match os::homedir() {
                         Some(p) => {p},
                         None => {panic!("You have no home")},   //should probably change that panic
@@ -48,7 +51,17 @@ fn main() {
                         Ok(_) => {},
                         Err(f) => {println!("cd: the directory \"{}\" does not exist", chdir)}
                     };
+                }*/
+                let mut chdir: Path;
+                if args.is_empty() {
+                    chdir = match os::homedir() {
+                        Some(d) => {d},
+                        None => {panic!("You have no home")},   //change later
+                    };
+                } else {
+                    chdir = Path::new(args[0]);
                 }
+                cd::ch_dir(chdir);
             },
             _ => {
                 if fork(args) {
