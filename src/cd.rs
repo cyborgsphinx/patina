@@ -4,10 +4,11 @@ use std::io::process::Command;
 use std::string::String;
 
 // really just a wrapper around os::change_dir()
+// returns 1 for success and 0 for failure
 pub fn ch_dir(dest: Path) -> usize {
     let res = match os::change_dir(&dest) {
-        Ok(d) => {0},
-        Err(f) => {println!("Failed changing directory");1},
+        Ok(d) => {1},
+        Err(f) => {println!("Failed changing directory");0},
     };
     return res;
 }
