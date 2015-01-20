@@ -14,13 +14,13 @@ fn main() {
 //    let mut (sin, sout, serr) = (io::stdin, io::stdout, io::stderr);  //for when I want to work
 //    with stdio, especially redirect
 
-    let mut cwd = match os::getcwd(){
-        Ok(p) => {p},
-        Err(f) => {panic!(f.to_string())},
-    };
-    let mut stat = os::get_exit_status();
+   let mut stat = os::get_exit_status();
 
     loop {
+         let mut cwd = match os::getcwd(){
+            Ok(p) => {p},
+            Err(f) => {panic!(f.to_string())},
+        };
         /*let mut dir = match cwd.filename() {
             Some(d) => {d},
             None => {b"/"},

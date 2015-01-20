@@ -7,9 +7,10 @@ use std::string::String;
 // returns 1 for success and 0 for failure
 pub fn ch_dir(dest: Path) -> usize {
     let res = match os::change_dir(&dest) {
-        Ok(d) => {1},
-        Err(f) => {println!("Failed changing directory");0},
+        Ok(_) => {1},
+        Err(_) => {println!("Failed changing directory");0},
     };
+    os::setenv("PWD", dest);
     return res;
 }
 
@@ -17,9 +18,9 @@ pub fn main() {
     let dir = Path::new("..");
     let num = ch_dir(dir);
     println!("{}", num);
-    let mut out = match Command::new("ls").output() {
+    let out = match Command::new("pwd").output() {
         Ok(p) => {p},
-        Err(f) => {panic!("Well fuck")},
+        Err(_) => {panic!("Well fuck")},
     };
     println!("{}", String::from_utf8_lossy(out.output.as_slice()));
 }
