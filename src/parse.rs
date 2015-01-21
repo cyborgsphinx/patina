@@ -17,7 +17,7 @@ pub fn path(st: String) -> String {
     };
     for c in st.chars() {
         match c {
-            '~' => res.push_str(home.as_slice()),
+            '~' => res.push_str(home.as_slice()),   // assumes that ~ is not part of a name
             _ => res.push(c),
         };
     }

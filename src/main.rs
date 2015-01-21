@@ -7,6 +7,7 @@ use std::str;
 
 mod prompt;
 mod cd;
+mod parse;
 
 fn main() {
     println!("Hash Shell\nPrealpha");
@@ -17,15 +18,10 @@ fn main() {
    let mut stat = os::get_exit_status();
 
     loop {
-         let mut cwd = match os::getcwd(){
+        let mut cwd = match os::getcwd(){
             Ok(p) => {p},
             Err(f) => {panic!(f.to_string())},
         };
-        /*let mut dir = match cwd.filename() {
-            Some(d) => {d},
-            None => {b"/"},
-        };
-        let mut dispdir = str::from_utf8(dir).unwrap_or("Could not find directory");*/
         print!("{} ", prompt::get_prompt(stat));
         let input = match io::stdio::stdin().read_line() {
             Ok(c) => {c},
@@ -46,11 +42,11 @@ fn main() {
                         None => {panic!("You have no home")},   //TODO improve
                     };
                 } else {
-                    chdir = Path::new(args[0]);
+                    chdir = Path::new(parse::path(args[0].to_string()));
                 }
                 cd::ch_dir(chdir);
             },
-            _ => {
+            _ => {  // I have no idea what the fuck to do here
                 if fork(args) {
                     let process = Command::new(cmd).cwd(&cwd).args(args.slice_to(args.len()-1)).output();
 
