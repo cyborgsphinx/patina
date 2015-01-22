@@ -8,6 +8,7 @@ use std::str;
 mod prompt;
 mod cd;
 mod parse;
+mod echo;
 
 fn main() {
     println!("Hash Shell\nPrealpha");
@@ -33,6 +34,9 @@ fn main() {
 
         match cmd {
             "exit" => {break},
+            "echo" => {
+                echo::put(echo::parse(args));   //TODO expand and improve
+            },
             "cd" => {       //changes the directory the shell shows, but nothing more
                 //TODO implement flags
                 let mut chdir: Path;
@@ -59,14 +63,18 @@ fn main() {
                         },
                     };
                 } else {
-                    let process = Command::new(cmd).cwd(&cwd).args(args).output();
+                    let process = Command::new(cmd).cwd(&cwd).args(args).spawn();
                     match process {
-                        Ok(out) => {
-                            print!("{}", String::from_utf8_lossy(out.output.as_slice()));
-                            stat = match out.status {
-                                ProcessExit::ExitStatus(val) => {val},
-                                ProcessExit::ExitSignal(val) => {val},
-                            };
+                        Ok(stream) => {
+                            let out = stream.wait_with_output().unwrap();
+                            let pout = String::from_utf8(out.output).unwrap_or("Fuck".to_string());
+                            let perr = String::from_utf8(out.error).unwrap_or("Fuck".to_string());
+                            if !pout.is_empty() {
+                                print!("{}", pout);
+                            }
+                            if !perr.is_empty() {
+                                print!("{}", perr);
+                            }
                         },
                         Err(f) => {
                             println!("Error: {}", f);
