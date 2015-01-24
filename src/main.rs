@@ -51,7 +51,7 @@ fn main() {
                 cd::ch_dir(chdir);
             },
             _ => {  // I have no idea what the fuck to do here
-                if fork(args) {
+                /*if fork(args) {
                     let process = Command::new(cmd).cwd(&cwd).args(args.slice_to(args.len()-1)).output();
 
                     match process {
@@ -62,32 +62,32 @@ fn main() {
                             println!("Error: {}", f);
                         },
                     };
-                } else {
-                    let process = Command::new(cmd).cwd(&cwd).args(args).spawn();
-                    match process {
-                        Ok(stream) => {
-                            let out = stream.wait_with_output().unwrap();
-                            let pout = String::from_utf8(out.output).unwrap_or("Fuck".to_string());
-                            let perr = String::from_utf8(out.error).unwrap_or("Fuck".to_string());
-                            if !pout.is_empty() {
-                                print!("{}", pout);
-                            }
-                            if !perr.is_empty() {
-                                print!("{}", perr);
-                            }
-                        },
-                        Err(f) => {
-                            println!("Error: {}", f);
-                        },
-                    };
-                }
+                } else {*/  // not ready for forking yet
+                let process = Command::new(cmd).args(args).spawn(); // .cwd() uncesesary
+                match process {
+                    Ok(stream) => {
+                        let out = stream.wait_with_output().unwrap();
+                        let pout = String::from_utf8(out.output).unwrap_or("Fuck".to_string());
+                        let perr = String::from_utf8(out.error).unwrap_or("Fuck".to_string());
+                        if !pout.is_empty() {
+                            print!("{}", pout);
+                        }
+                        if !perr.is_empty() {
+                            print!("{}", perr);
+                        }
+                    },
+                    Err(f) => {
+                        println!("Error: {}", f);
+                    },
+                };
+                //} the matching brace for else
             },
         };
     }
     //not a fan of exiting with the same status as last-run command
     os::set_exit_status(0);
 }
-
+/*      // not ready for prime time yet
 fn fork(opts: &[&str]) -> bool{
     if opts.len() > 0 {
         let test = match opts.last() {
@@ -98,4 +98,4 @@ fn fork(opts: &[&str]) -> bool{
     } else {
         return false;
     }
-}
+}*/
