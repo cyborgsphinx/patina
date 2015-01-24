@@ -1,3 +1,5 @@
+extern crate linenoise;
+
 use std::io;
 use std::io::fs;
 use std::os;
@@ -23,11 +25,14 @@ fn main() {
             Ok(p) => {p},
             Err(f) => {panic!(f.to_string())},
         };
-        print!("{} ", prompt::get_prompt(stat));
-        let input = match io::stdio::stdin().read_line() {
-            Ok(c) => {c},
-            Err(f) => {panic!(f.to_string())},
+        let input = match linenoise::input(prompt::get_prompt(stat).as_slice()) {
+            Some(st) => st,
+            None => "Input not parsed".to_string(),
         };
+       if input == "Input not parsed".to_string() {
+            print!("Input not parsed");
+            continue;
+        }
         if input.trim() == "" {continue}
         let opt: Vec<&str> = input.trim().split_str(" ").collect();
         let (cmd, args) = (opt[0], opt.slice(1, opt.len()));
@@ -49,6 +54,9 @@ fn main() {
                     chdir = Path::new(parse::path(args[0].to_string()));
                 }
                 cd::ch_dir(chdir);
+            },
+            "clear" => {
+                linenoise::clear_screen();
             },
             _ => {  // I have no idea what the fuck to do here
                 /*if fork(args) {

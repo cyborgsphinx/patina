@@ -3,3 +3,8 @@
 name = "hash"
 version = "0.0.1"
 authors = ["James Hannah <jhannah8124@gmail.com>"]
+
+[dependencies.linenoise-rust]
+
+name = "linenoise-rust"
+git = "https://github.com/octplane/rust-linenoise.git"

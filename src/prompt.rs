@@ -33,8 +33,8 @@ pub fn get_prompt(status: isize) -> String {
         pro.push(' ');
     }
     pro.push_str(dispdir);
-    pro.push_str(" $");
-    return pro
+    pro.push_str(" $ ");
+    return pro;
 }
 
 /*pub fn main() {
