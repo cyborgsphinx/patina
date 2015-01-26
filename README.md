@@ -1,4 +1,4 @@
-#Command Reader And SHell
+#Petina
 
 A shell written in rust with design ideas from fish and bash
 
@@ -11,6 +11,7 @@ Fish-like syntax (not trying to be bash/POSIX compatible)
 More to come
 
 ##Commands
+
 - cd
 - clear
 - echo
