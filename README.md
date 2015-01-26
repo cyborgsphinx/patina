@@ -10,7 +10,7 @@ Fish-like syntax (not trying to be bash/POSIX compatible)
 
 More to come
 
-##Commands
+##Built-in Commands
 
 - cd
 - clear

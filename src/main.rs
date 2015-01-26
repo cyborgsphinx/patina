@@ -71,7 +71,7 @@ fn main() {
                         },
                     };
                 } else {*/  // not ready for forking yet
-                let process = Command::new(cmd).args(args).spawn(); // .cwd() uncesesary
+                let process = Command::new(cmd).args(args).spawn();
                 match process {
                     Ok(stream) => {
                         let out = stream.wait_with_output().unwrap();
