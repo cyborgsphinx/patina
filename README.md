@@ -1,4 +1,4 @@
-#Petina
+#Patina
 
 A shell written in rust with design ideas from fish and bash
 
