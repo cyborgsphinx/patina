@@ -11,16 +11,17 @@ mod prompt;
 mod cd;
 mod parse;
 mod echo;
+mod complete;
 
 fn main() {
     println!("Hash Shell\nPrealpha");
 
-//    let mut (sin, sout, serr) = (io::stdin, io::stdout, io::stderr);  //for when I want to work
+//    let mut (sin, sout, serr) = (io::stdio::stdin, io::stdio::stdout, io::stdio::stderr);  //for when I want to work
 //    with stdio, especially redirect
 
-   let mut stat = os::get_exit_status();
-
     loop {
+        linenoise::set_callback(complete::complete);
+        let mut stat = os::get_exit_status();
         let mut cwd = match os::getcwd(){
             Ok(p) => {p},
             Err(f) => {panic!(f.to_string())},
