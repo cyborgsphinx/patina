@@ -2,7 +2,7 @@
 name = "hash"
 version = "0.0.1"
 dependencies = [
- "linenoise-rust 0.1.2 (git+https://github.com/octplane/rust-linenoise.git)",
+ "linenoise 0.0.4 (git+https://github.com/cmr/linenoise-rs.git)",
 ]
 
 [[package]]
@@ -11,9 +11,17 @@ version = "0.1.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 
 [[package]]
-name = "linenoise-rust"
-version = "0.1.2"
-source = "git+https://github.com/octplane/rust-linenoise.git#29f7de6bd909d36a1fe872e22e598596a2635d98"
+name = "linenoise"
+version = "0.0.4"
+source = "git+https://github.com/cmr/linenoise-rs.git#7ea86c9df653091edde480e2490f29d210203e3e"
+dependencies = [
+ "linenoise-sys 1.0.1 (git+https://github.com/cmr/linenoise-rs.git)",
+]
+
+[[package]]
+name = "linenoise-sys"
+version = "1.0.1"
+source = "git+https://github.com/cmr/linenoise-rs.git#7ea86c9df653091edde480e2490f29d210203e3e"
 dependencies = [
  "gcc 0.1.6 (registry+https://github.com/rust-lang/crates.io-index)",
 ]

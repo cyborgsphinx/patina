@@ -19,14 +19,14 @@ fn main() {
 //    let mut (sin, sout, serr) = (io::stdio::stdin, io::stdio::stdout, io::stdio::stderr);  //for when I want to work
 //    with stdio, especially redirect
 
+    linenoise::set_callback(compl);
     loop {
-        linenoise::set_callback(complete::complete);
         let mut stat = os::get_exit_status();
         let mut cwd = match os::getcwd(){
             Ok(p) => {p},
             Err(f) => {panic!(f.to_string())},
         };
-        let input = match linenoise::input(prompt::get_prompt(stat).as_slice()) {
+        let input = match linenoise::prompt(prompt::get_prompt(stat).as_slice()) {
             Some(st) => st,
             None => "Input not parsed".to_string(),
         };
@@ -108,3 +108,28 @@ fn fork(opts: &[&str]) -> bool{
         return false;
     }
 }*/
+
+fn compl(input: &str) -> Vec<String> {
+    let mut v: Vec<&str> = input.split(' ').collect();
+    let mut res: Vec<String> = Vec::new();
+
+    if v.len() == 1 {
+        res = complete::program(input);
+    } else {
+        let s = match v.pop() {
+            Some(r) => r,
+            None => "Not there",
+        };
+        if s.contains_char(' ') {
+            return Vec::<String>::new();
+        }
+
+        match s {
+            "g" | "gi" => res.push("git".to_string()),
+            "p" | "pa" | "pac" | "pacm" | "pacma" => res.push("pacman".to_string()),
+            _ => res.push("Not Implimented Yet".to_string()),
+        };
+    }
+
+    return res;
+}
