@@ -10,34 +10,33 @@ use std::os;
 use std::str;
 use std::path::Path;
 use self::core::ops::Deref;
-/*
-pub fn complete(st: &str) -> Vec<&str> {  // is it String or &str?
-    let mut v: Vec<&str> = st.split(' ').collect(); // needs to be mut because pop()
-    let mut res: Vec<&str> = Vec::new();
 
-    if v.len() == 1 {   // lifetime woes
-        let vs = program(st);
-        res = vs.iter().map(|s| s.as_slice()).collect();
+pub fn complete(st: &str) -> Vec<String> {
+    let mut v: Vec<&str> = st.split(' ').collect(); // needs to be mut because pop()
+    let mut res: Vec<String> = Vec::new();
+
+    if v.len() == 1 {
+        res = program(st);
     } else {
         let s = match v.pop() {
             Some(r) => r,
             None => "Not there",
         };
         if s.contains_char(' ') {
-            return Vec::<&str>::new();  // returns an empty vector if things go wrong
+            return Vec::<String>::new();  // returns an empty vector if things go wrong
         }
 
         match s {
-            "g" | "gi" => res.push("git"),
-            "p" | "pa" | "pac" | "pacm" | "pacma" => res.push("pacman"),
-            _ => res.push("Not Yet Implimented"),
+            "g" | "gi" => res.push("git".to_string()),
+            "p" | "pa" | "pac" | "pacm" | "pacma" => res.push("pacman".to_string()),
+            _ => res.push("Not Yet Implimented".to_string()),
         };
     }
 
     return res;
 }
-*/
-pub fn program(st: &str) -> Vec<String> {
+
+fn program(st: &str) -> Vec<String> {
     let mut matches: Vec<String> = Vec::new();
     let search = match os::getenv("PATH") {
         Some(p) => p,

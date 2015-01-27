@@ -19,7 +19,7 @@ fn main() {
 //    let mut (sin, sout, serr) = (io::stdio::stdin, io::stdio::stdout, io::stdio::stderr);  //for when I want to work
 //    with stdio, especially redirect
 
-    linenoise::set_callback(compl);
+    linenoise::set_callback(complete::complete);
     loop {
         let mut stat = os::get_exit_status();
         let mut cwd = match os::getcwd(){
@@ -107,7 +107,7 @@ fn fork(opts: &[&str]) -> bool{
     } else {
         return false;
     }
-}*/
+}
 
 fn compl(input: &str) -> Vec<String> {
     let mut v: Vec<&str> = input.split(' ').collect();
@@ -132,4 +132,4 @@ fn compl(input: &str) -> Vec<String> {
     }
 
     return res;
-}
+}*/
