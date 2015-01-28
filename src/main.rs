@@ -14,10 +14,7 @@ mod echo;
 mod complete;
 
 fn main() {
-    println!("Hash Shell\nPrealpha");
-
-//    let mut (sin, sout, serr) = (io::stdio::stdin, io::stdio::stdout, io::stdio::stderr);  //for when I want to work
-//    with stdio, especially redirect
+    println!("Patina Shell\nPrealpha");
 
     linenoise::set_callback(complete::complete);
     loop {

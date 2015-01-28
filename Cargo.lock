@@ -1,5 +1,5 @@
 [root]
-name = "hash"
+name = "patina"
 version = "0.0.1"
 dependencies = [
  "linenoise 0.0.4 (git+https://github.com/cmr/linenoise-rs.git)",
