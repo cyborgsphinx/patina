@@ -1,5 +1,5 @@
 [root]
-name = "hash"
+name = "patina"
 version = "0.0.1"
 dependencies = [
  "linenoise-rust 0.1.2 (git+https://github.com/octplane/rust-linenoise.git)",

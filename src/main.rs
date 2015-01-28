@@ -13,12 +13,13 @@ mod parse;
 mod echo;
 
 fn main() {
-    println!("Hash Shell\nPrealpha");
+    println!("Patina Shell\nPrealpha");
 
 //    let mut (sin, sout, serr) = (io::stdin, io::stdout, io::stderr);  //for when I want to work
 //    with stdio, especially redirect
 
-   let mut stat = os::get_exit_status();
+    linenoise::history_load("~/.patina_history");
+    let mut stat = os::get_exit_status();
 
     loop {
         let mut cwd = match os::getcwd(){
@@ -29,11 +30,12 @@ fn main() {
             Some(st) => st,
             None => "Input not parsed".to_string(),
         };
-       if input == "Input not parsed".to_string() {
+        if input == "Input not parsed".to_string() {
             print!("Input not parsed");
             continue;
         }
         if input.trim() == "" {continue}
+        linenoise::history_add(input.as_slice());
         let opt: Vec<&str> = input.trim().split_str(" ").collect();
         let (cmd, args) = (opt[0], opt.slice(1, opt.len()));
 
@@ -92,6 +94,7 @@ fn main() {
             },
         };
     }
+    linenoise::history_save("~/.patina_history");
     //not a fan of exiting with the same status as last-run command
     os::set_exit_status(0);
 }
