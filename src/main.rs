@@ -6,6 +6,7 @@ use std::os;
 use std::io::process::{Command, ProcessExit};
 use std::path::Path;
 use std::str;
+use std::io::process::StdioContainer::InheritFd;
 
 mod prompt;
 mod cd;
@@ -69,7 +70,7 @@ fn main() {
                         },
                     };
                 } else {*/  // not ready for forking yet
-                let process = Command::new(cmd).args(args).spawn();
+                let process = Command::new(cmd).args(args).stdin(InheritFd(0)).stdout(InheritFd(1)).stderr(InheritFd(2)).spawn();
                 match process {
                     Ok(stream) => {
                         let out = stream.wait_with_output().unwrap();
