@@ -107,29 +107,4 @@ fn fork(opts: &[&str]) -> bool{
     } else {
         return false;
     }
-}
-
-fn compl(input: &str) -> Vec<String> {
-    let mut v: Vec<&str> = input.split(' ').collect();
-    let mut res: Vec<String> = Vec::new();
-
-    if v.len() == 1 {
-        res = complete::program(input);
-    } else {
-        let s = match v.pop() {
-            Some(r) => r,
-            None => "Not there",
-        };
-        if s.contains_char(' ') {
-            return Vec::<String>::new();
-        }
-
-        match s {
-            "g" | "gi" => res.push("git".to_string()),
-            "p" | "pa" | "pac" | "pacm" | "pacma" => res.push("pacman".to_string()),
-            _ => res.push("Not Implimented Yet".to_string()),
-        };
-    }
-
-    return res;
 }*/
