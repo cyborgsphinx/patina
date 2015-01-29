@@ -1,15 +1,17 @@
-//extern crate linenoise;
+#![feature(io)]
+#![feature(path)]
+#![feature(collections)]
+#![feature(os)]
+#![feature(core)]
+
 extern crate core;
 
-use std::boxed::Box;
 use std::string::String;
-use std::old_io as io;
-use self::io::fs;
-use self::io::fs::PathExtensions;
+use std::old_io::fs;
+use std::old_io::fs::PathExtensions;
 use std::os;
 use std::str;
 use std::path::Path;
-use self::core::ops::Deref;
 
 pub fn complete(st: &str) -> Vec<String> {
     let v: Vec<&str> = st.words().collect();
@@ -54,18 +56,9 @@ fn program(st: &str) -> Vec<String> {
 fn pathname(st: &str) -> Vec<String> {
     let mut matches: Vec<String> = Vec::new();
     let mut path = Path::new(st);
-    let dir = match str::from_utf8(path.dirname()) {
-        Ok(s) => s,
-        Err(f) => panic!("failed at {}", f),    // not robust
-    };
-    println!("{}", dir);
+    let dir = path.dirname();
+    let fname = str::from_utf8(path.filename().unwrap()).unwrap();  //not robust
     let path_dir = Path::new(dir);
-    println!("{}", path_dir.display());
-    if fs::readdir(&path_dir).is_ok() {
-        println!("Works");
-    } else {
-        println!("Doesn't");
-    }
     let contents = match fs::readdir(&path_dir) {
         Ok(s) => s,
         Err(_) => Vec::<Path>::new(),   // gives empty vector; nothing to read
@@ -73,7 +66,7 @@ fn pathname(st: &str) -> Vec<String> {
     for entry in contents.iter() {
         // TODO: make more robust
         let file = str::from_utf8(entry.filename().unwrap()).unwrap();
-        if file.starts_with(st) {
+        if file.starts_with(fname) {
             matches.push(file.to_string().clone());
         }
     }
@@ -85,10 +78,12 @@ fn main() {
     for elem in vic.drain() {
         println!("{}", elem);
     }
+    println!("");
     vic = pathname("/usr/bin");
     for elem in vic.drain() {
         println!("{}", elem);
     }
+    println!("");
     vic = program("pac");
     for elem in vic.drain() {
         println!("{}", elem);
