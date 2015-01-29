@@ -1,12 +1,12 @@
 extern crate linenoise;
 
-use std::io;
-use std::io::fs;
+use std::old_io as io;
+use self::io::fs;
 use std::os;
-use std::io::process::{Command, ProcessExit};
+use self::io::process::{Command, ProcessExit};
 use std::path::Path;
 use std::str;
-use std::io::process::StdioContainer::InheritFd;
+use self::io::process::StdioContainer::InheritFd;
 
 mod prompt;
 mod cd;
@@ -28,7 +28,7 @@ fn main() {
             Some(st) => st,
             None => "Input not parsed".to_string(),
         };
-       if input == "Input not parsed".to_string() {
+        if input == "Input not parsed".to_string() {
             print!("Input not parsed");
             continue;
         }
