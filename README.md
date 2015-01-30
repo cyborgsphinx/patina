@@ -6,7 +6,8 @@ Nowhere near feature complete
 
 ##Features
 
-Fish-like syntax (not trying to be bash/POSIX compatible)
+- Fish-like syntax (not trying to be bash/POSIX compatible)
+- Rudimentary tab completion
 
 More to come
 
@@ -17,8 +18,10 @@ More to come
 - echo
 - exit
 
+More to come
+
 ##TODO
 
 Finish working on shell built-ins
 
-Tab completion
+Colours
