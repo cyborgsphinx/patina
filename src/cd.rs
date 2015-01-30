@@ -1,6 +1,6 @@
 use std::os;
 use std::path::Path;
-use std::io::process::Command;
+use std::old_io::process::Command;
 use std::string::String;
 
 // really just a wrapper around os::change_dir()

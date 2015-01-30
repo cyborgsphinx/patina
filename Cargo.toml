@@ -4,7 +4,6 @@ name = "patina"
 version = "0.0.1"
 authors = ["James Hannah <jhannah8124@gmail.com>"]
 
-[dependencies.linenoise-rust]
+[dependencies.linenoise]
 
-name = "linenoise-rust"
-git = "https://github.com/octplane/rust-linenoise.git"
+git = "https://github.com/cmr/linenoise-rs.git"

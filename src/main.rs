@@ -1,17 +1,18 @@
 extern crate linenoise;
 
-use std::io;
-use std::io::fs;
+use std::old_io as io;
+use std::old_io::fs;
 use std::os;
-use std::io::process::{Command, ProcessExit};
+use std::old_io::process::{Command, ProcessExit};
 use std::path::Path;
 use std::str;
-use std::io::process::StdioContainer::InheritFd;
+use std::old_io::process::StdioContainer::InheritFd;
 
 mod prompt;
 mod cd;
 mod parse;
 mod echo;
+mod complete;
 
 fn main() {
     println!("Patina Shell\nPrealpha");
@@ -22,12 +23,14 @@ fn main() {
     linenoise::history_load("~/.patina_history");
     let mut stat = os::get_exit_status();
 
+    linenoise::set_callback(complete::complete);
     loop {
+        let mut stat = os::get_exit_status();
         let mut cwd = match os::getcwd(){
             Ok(p) => {p},
             Err(f) => {panic!(f.to_string())},
         };
-        let input = match linenoise::input(prompt::get_prompt(stat).as_slice()) {
+        let input = match linenoise::prompt(prompt::get_prompt(stat).as_slice()) {
             Some(st) => st,
             None => "Input not parsed".to_string(),
         };

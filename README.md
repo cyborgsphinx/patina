@@ -1,4 +1,4 @@
-#Patina
+#Patina - A Rust Shell
 
 A shell written in rust with design ideas from fish and bash
 
