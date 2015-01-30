@@ -6,6 +6,4 @@ authors = ["James Hannah <jhannah8124@gmail.com>"]
 
 [dependencies.linenoise]
 
-name = "linenoise"
-version = "0.0.4"
 git = "https://github.com/cmr/linenoise-rs.git"

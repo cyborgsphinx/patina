@@ -1,12 +1,12 @@
 extern crate linenoise;
 
 use std::old_io as io;
-use self::io::fs;
+use std::old_io::fs;
 use std::os;
-use self::io::process::{Command, ProcessExit};
+use std::old_io::process::{Command, ProcessExit};
 use std::path::Path;
 use std::str;
-use self::io::process::StdioContainer::InheritFd;
+use std::old_io::process::StdioContainer::InheritFd;
 
 mod prompt;
 mod cd;

@@ -7,7 +7,7 @@ dependencies = [
 
 [[package]]
 name = "gcc"
-version = "0.1.6"
+version = "0.1.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 
 [[package]]
@@ -23,6 +23,6 @@ name = "linenoise-sys"
 version = "1.0.1"
 source = "git+https://github.com/cmr/linenoise-rs.git#7ea86c9df653091edde480e2490f29d210203e3e"
 dependencies = [
- "gcc 0.1.6 (registry+https://github.com/rust-lang/crates.io-index)",
+ "gcc 0.1.7 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
