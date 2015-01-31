@@ -2,8 +2,19 @@ use std::os;
 use std::string::String;
 use std::vec::Vec;
 
-// string parsing (also arguments) goes here
-pub fn string(st: &str) -> Vec<String> {
+pub fn arguments(input: &str) -> String {
+    let mut res = String::new();
+
+    if input.starts_with("~") || input.starts_with("./") {
+        res = path(input);
+    } else {
+        //res = string(input);
+    }
+
+    res
+}
+// string parsing goes here (need to not return a vector)
+pub fn string(st: String) -> Vec<String> {
     let mut res = Vec::new();
     let mut in_sin_quotes = false;   // keeps track of whether or not to bother with a space
     let mut in_dub_quotes = false;  // need separate flags for double and single quotes
@@ -59,7 +70,7 @@ pub fn string(st: &str) -> Vec<String> {
 }
 
 // string parsing for creating paths (~ -> /home/$USER)
-pub fn path(st: String) -> String {
+pub fn path(st: &str) -> String {
     let mut res = String::new();
     let home: String = match os::getenv("HOME") { // os::homedir returns a path, this retruns a string
         Some(val) => val,
@@ -75,7 +86,7 @@ pub fn path(st: String) -> String {
 }
 
 fn main() {
-    let this = path(String::from_str("~/Downloads"));
+    let this = path("~/Downloads");
     assert_eq!(this.as_slice(), "/home/james/Downloads");
     println!("You did it!");
 }

@@ -40,10 +40,10 @@ fn main() {
         }
         if input.trim() == "" {continue}
         linenoise::history_add(input.as_slice());
-        let opt: Vec<&str> = input.trim().split_str(" ").collect();
-        let (cmd, args) = (opt[0], opt.slice(1, opt.len()));
+        let opt: Vec<&str> = input.trim().words().collect();
+        let (cmd, args) = (opt[0], opt.slice_from(1));
 
-        match cmd {
+        match cmd.as_slice() {
             "exit" => {break},
             "echo" => {
                 echo::put(echo::parse(args));   //TODO expand and improve
@@ -57,7 +57,7 @@ fn main() {
                         None => {panic!("You have no home")},   //TODO improve
                     };
                 } else {
-                    chdir = Path::new(parse::path(args[0].to_string()));
+                    chdir = Path::new(parse::path(args[0]));
                 }
                 cd::ch_dir(chdir);
             },

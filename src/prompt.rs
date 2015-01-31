@@ -37,11 +37,6 @@ pub fn get_prompt(status: isize) -> String {
     return pro;
 }
 
-/*pub fn main() {
-    println!("{}", prompt(0));
-    println!("{}", prompt(101));
-}*/
-
 #[test]
 fn status_is_zero() {
     assert!("src $ ", get_prompt(0));
