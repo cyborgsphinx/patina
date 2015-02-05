@@ -1,5 +1,5 @@
 use std::os;
-use std::path::Path;
+use std::old_path::Path;
 use std::old_io::process::Command;
 use std::string::String;
 

@@ -5,7 +5,7 @@ use std::old_io::fs;
 use std::old_io::fs::PathExtensions;
 use std::os;
 use std::str;
-use std::path::Path;
+use std::old_path::Path;
 
 pub fn complete(st: &str) -> Vec<String> {
     let mut v: Vec<&str> = st.split(' ').collect();

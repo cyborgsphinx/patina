@@ -1,10 +1,9 @@
 extern crate linenoise;
 
-use std::old_io as io;
 use std::old_io::fs;
 use std::os;
 use std::old_io::process::{Command, ProcessExit};
-use std::path::Path;
+use std::old_path::Path;
 use std::str;
 use std::old_io::process::StdioContainer::InheritFd;
 
