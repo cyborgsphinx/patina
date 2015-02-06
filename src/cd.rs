@@ -10,7 +10,8 @@ pub fn ch_dir(dest: Path) -> usize {
         Ok(_) => 1,
         Err(_) => {
             println!("Failed changing directory");
-            0},
+            0
+        },
     }
 }
 

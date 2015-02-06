@@ -23,9 +23,6 @@ fn main() {
                                              signals::catch_signal as u64);
     }
 
-//    let mut (sin, sout, serr) = (io::stdin, io::stdout, io::stderr);  //for when I want to work
-//    with stdio, especially redirect
-
     linenoise::history_load("~/.patina_history");
     let mut stat = os::get_exit_status();
 
@@ -108,15 +105,3 @@ fn main() {
     //not a fan of exiting with the same status as last-run command
     os::set_exit_status(0);
 }
-/*      // not ready for prime time yet
-fn fork(opts: &[&str]) -> bool{
-    if opts.len() > 0 {
-        let test = match opts.last() {
-            Some(st) => {*st},
-            None => {panic!("Oh fuck")},
-        };
-        return test == "&";
-    } else {
-        return false;
-    }
-}*/
