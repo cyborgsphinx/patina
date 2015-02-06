@@ -1,4 +1,5 @@
 extern crate linenoise;
+extern crate libc;
 
 use std::old_io::fs;
 use std::os;
@@ -12,9 +13,15 @@ mod cd;
 mod parse;
 mod echo;
 mod complete;
+mod signals;
 
 fn main() {
     println!("Patina Shell\nPrealpha");
+
+    unsafe {
+        self::libc::funcs::posix01::signal::signal(self::libc::consts::os::posix88::SIGINT,
+                                             signals::catch_signal as u64);
+    }
 
 //    let mut (sin, sout, serr) = (io::stdin, io::stdout, io::stderr);  //for when I want to work
 //    with stdio, especially redirect
@@ -77,7 +84,7 @@ fn main() {
                     };
                 } else {*/  // not ready for forking yet
                 let process = Command::new(cmd).args(args).stdin(InheritFd(0)).stdout(InheritFd(1)).stderr(InheritFd(2)).spawn();
-                match process {
+                /*match process {
                     Ok(stream) => {
                         let out = stream.wait_with_output().unwrap();
                         let pout = String::from_utf8(out.output).unwrap_or("Fuck".to_string());
@@ -92,7 +99,7 @@ fn main() {
                     Err(f) => {
                         println!("Error: {}", f);
                     },
-                };
+                };*/
                 //} the matching brace for else
             },
         };
