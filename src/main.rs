@@ -3,6 +3,7 @@ extern crate libc;
 
 use std::old_io::fs;
 use std::os;
+use std::old_io::process;
 use std::old_io::process::{Command, ProcessExit};
 use std::old_path::Path;
 use std::str;
@@ -20,6 +21,10 @@ fn main() {
 
     unsafe {
         self::libc::funcs::posix01::signal::signal(self::libc::consts::os::posix88::SIGINT,
+                                             signals::catch_signal as u64);
+        self::libc::funcs::posix01::signal::signal(self::libc::consts::os::posix88::SIGHUP,
+                                             signals::catch_signal as u64);
+        self::libc::funcs::posix01::signal::signal(20, //SIGTSTP; doesn't quite work
                                              signals::catch_signal as u64);
     }
 
@@ -66,6 +71,12 @@ fn main() {
             },
             "clear" => {
                 linenoise::clear_screen();
+            },
+            "fg" => {
+                process::Process::kill(args[0].parse::<i32>().unwrap(), 25);//SIGCONT == 25
+            },
+            "bg" => {
+                process::Process::kill(args[0].parse::<i32>().unwrap(), 25);//pid_t == i32
             },
             _ => {  // I have no idea what the fuck to do here
                 /*if fork(args) {
