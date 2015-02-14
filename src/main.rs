@@ -8,6 +8,7 @@ use std::old_io::process::{Command, ProcessExit};
 use std::old_path::Path;
 use std::str;
 use std::old_io::process::StdioContainer::InheritFd;
+use std::env;
 
 mod prompt;
 mod cd;
@@ -19,48 +20,53 @@ mod signals;
 fn main() {
     println!("Patina Shell\nPrealpha");
 
-    unsafe {
+    unsafe { // signals to be ignored
         self::libc::funcs::posix01::signal::signal(self::libc::consts::os::posix88::SIGINT,
-                                             signals::catch_signal as u64);
-        self::libc::funcs::posix01::signal::signal(self::libc::consts::os::posix88::SIGHUP,
-                                             signals::catch_signal as u64);
-        self::libc::funcs::posix01::signal::signal(20, //SIGTSTP; doesn't quite work
-                                             signals::catch_signal as u64);
-    }
+                                                signals::catch_signal as u64); //i'd prefer this
+        self::libc::funcs::posix01::signal::signal(self::libc::consts::os::posix88::SIGQUIT,
+                                                self::libc::consts::os::posix01::SIG_IGN);
+        self::libc::funcs::posix01::signal::signal(20i32, //SIGTSTP
+                                                self::libc::consts::os::posix01::SIG_IGN);
+        self::libc::funcs::posix01::signal::signal(26i32, //SIGTTIN
+                                                self::libc::consts::os::posix01::SIG_IGN);
+        self::libc::funcs::posix01::signal::signal(27i32, //SIGTTOU
+                                                self::libc::consts::os::posix01::SIG_IGN);
+        self::libc::funcs::posix01::signal::signal(18i32, //SIGCHLD
+                                                self::libc::consts::os::posix01::SIG_IGN);
+    }   // c_int == i32
 
     linenoise::history_load("~/.patina_history");
-    let mut stat = os::get_exit_status();
+    let mut stat = env::get_exit_status();
 
     linenoise::set_callback(complete::complete);
     loop {
-        let mut stat = os::get_exit_status();
-        let mut cwd = match os::getcwd(){
+        let cwd = match env::current_dir(){
             Ok(p) => {p},
             Err(f) => {panic!(f.to_string())},
         };
-        let input = match linenoise::prompt(prompt::get_prompt(stat).as_slice()) {
+        let input = match linenoise::prompt(prompt::get_prompt(stat as isize).as_slice()) {
             Some(st) => st,
             None => "Input not parsed".to_string(),
         };
-        if input == "Input not parsed".to_string() {
+/*        if input == "Input not parsed".to_string() {
             print!("Input not parsed");
             continue;
-        }
+        }*/
         if input.trim() == "" {continue}
         linenoise::history_add(input.as_slice());
         let opt: Vec<&str> = input.trim().words().collect();
-        let (cmd, args) = (opt[0], opt.slice_from(1));
+        let (cmd, args) = (opt[0], opt.slice_from(1)); // &s[start..] syntax fails
 
         match cmd.as_slice() {
             "exit" => {break},
             "echo" => {
                 echo::put(echo::parse(args));   //TODO expand and improve
             },
-            "cd" => {       //changes the directory the shell shows, but nothing more
+            "cd" => {
                 //TODO implement flags
                 let mut chdir: Path;
                 if args.is_empty() {    //cd called alone; equivalent to cd ~
-                    chdir = match os::homedir() {
+                    chdir = match env::home_dir() {
                         Some(d) => {d},
                         None => {panic!("You have no home")},   //TODO improve
                     };
@@ -114,5 +120,5 @@ fn main() {
     }
     linenoise::history_save("~/.patina_history");
     //not a fan of exiting with the same status as last-run command
-    os::set_exit_status(0);
+    env::set_exit_status(0);
 }
