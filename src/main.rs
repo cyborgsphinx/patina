@@ -24,15 +24,15 @@ fn main() {
         self::libc::funcs::posix01::signal::signal(self::libc::consts::os::posix88::SIGINT,
                                                 signals::catch_signal as u64); //i'd prefer this
         self::libc::funcs::posix01::signal::signal(self::libc::consts::os::posix88::SIGQUIT,
-                                                self::libc::consts::os::posix01::SIG_IGN);
+                                                signals::catch_signal as u64);
         self::libc::funcs::posix01::signal::signal(20i32, //SIGTSTP
-                                                self::libc::consts::os::posix01::SIG_IGN);
+                                                signals::catch_signal as u64);
         self::libc::funcs::posix01::signal::signal(26i32, //SIGTTIN
-                                                self::libc::consts::os::posix01::SIG_IGN);
+                                                signals::catch_signal as u64);
         self::libc::funcs::posix01::signal::signal(27i32, //SIGTTOU
-                                                self::libc::consts::os::posix01::SIG_IGN);
+                                                signals::catch_signal as u64);
         self::libc::funcs::posix01::signal::signal(18i32, //SIGCHLD
-                                                self::libc::consts::os::posix01::SIG_IGN);
+                                                signals::catch_signal as u64);
     }   // c_int == i32
 
     linenoise::history_load("~/.patina_history");

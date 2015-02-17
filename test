@@ -1,0 +1,4 @@
+#!/usr/bin/bash
+
+cargo build
+target/patina
