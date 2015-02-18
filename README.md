@@ -25,5 +25,3 @@ More to come
 Finish working on shell built-ins
 
 Colours
-
-Goddamned signals

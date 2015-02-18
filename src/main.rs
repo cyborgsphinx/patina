@@ -36,17 +36,17 @@ fn main() {
     }   // c_int == i32
 
     linenoise::history_load("~/.patina_history");
-    let mut stat = env::get_exit_status();
 
     linenoise::set_callback(complete::complete);
     loop {
+        let stat = env::get_exit_status();
         let cwd = match env::current_dir(){
             Ok(p) => {p},
             Err(f) => {panic!(f.to_string())},
         };
         let input = match linenoise::prompt(prompt::get_prompt(stat as isize).as_slice()) {
             Some(st) => st,
-            None => "Input not parsed".to_string(),
+            None => "".to_string(),
         };
 /*        if input == "Input not parsed".to_string() {
             print!("Input not parsed");
@@ -98,6 +98,10 @@ fn main() {
                     };
                 } else {*/  // not ready for forking yet
                 let process = Command::new(cmd).args(args).stdin(InheritFd(0)).stdout(InheritFd(1)).stderr(InheritFd(2)).spawn();
+                if process.is_err() {
+                    println!("patina: command not found");
+                    env::set_exit_status(127);
+                }
                 /*match process {
                     Ok(stream) => {
                         let out = stream.wait_with_output().unwrap();
@@ -120,5 +124,5 @@ fn main() {
     }
     linenoise::history_save("~/.patina_history");
     //not a fan of exiting with the same status as last-run command
-    env::set_exit_status(0);
+    //env::set_exit_status(0);
 }
