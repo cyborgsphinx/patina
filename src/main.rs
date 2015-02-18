@@ -61,6 +61,7 @@ fn main() {
             "exit" => {break},
             "echo" => {
                 echo::put(echo::parse(args));   //TODO expand and improve
+                env::set_exit_status(0);
             },
             "cd" => {
                 //TODO implement flags
@@ -74,14 +75,16 @@ fn main() {
                     chdir = Path::new(parse::path(args[0]));
                 }
                 cd::ch_dir(chdir);
+                env::set_exit_status(0);
             },
             "clear" => {
                 linenoise::clear_screen();
+                env::set_exit_status(0);
             },
-            "fg" => {
+            "fg" => {//not functional
                 process::Process::kill(args[0].parse::<i32>().unwrap(), 25);//SIGCONT == 25
             },
-            "bg" => {
+            "bg" => {//not functional
                 process::Process::kill(args[0].parse::<i32>().unwrap(), 25);//pid_t == i32
             },
             _ => {  // I have no idea what the fuck to do here
@@ -101,6 +104,8 @@ fn main() {
                 if process.is_err() {
                     println!("patina: command not found: {}", cmd);
                     env::set_exit_status(127);
+                } else { //need to fix for arbitrary errors
+                    env::set_exit_status(0);
                 }
                 /*match process {
                     Ok(stream) => {
@@ -123,6 +128,4 @@ fn main() {
         };
     }
     linenoise::history_save("~/.patina_history");
-    //not a fan of exiting with the same status as last-run command
-    //env::set_exit_status(0);
 }
