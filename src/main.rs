@@ -99,7 +99,7 @@ fn main() {
                 } else {*/  // not ready for forking yet
                 let process = Command::new(cmd).args(args).stdin(InheritFd(0)).stdout(InheritFd(1)).stderr(InheritFd(2)).spawn();
                 if process.is_err() {
-                    println!("patina: command not found");
+                    println!("patina: command not found: {}", cmd);
                     env::set_exit_status(127);
                 }
                 /*match process {
