@@ -35,6 +35,8 @@ fn main() {
                                                 signals::catch_signal as u64);
     }   // c_int == i32
 
+    let mut locals: Vec<(String, String)> = Vec::new();
+
     linenoise::history_load("~/.patina_history");
 
     linenoise::set_callback(complete::complete);
@@ -61,6 +63,31 @@ fn main() {
             "exit" => {break},
             "echo" => {
                 echo::put(echo::parse(args));   //TODO expand and improve
+                env::set_exit_status(0);
+            },
+            "set" => {
+                match args[0].as_slice() {
+                    "-x" => {
+                        let (key, value) = (args[1].to_string(), args[2].to_string());
+                        env::set_var(&key, &value);
+                    },
+                    "-u" => {
+                        env::remove_var(&args[1]);
+                    },
+                    "-e" => {
+                        let mut i = 0us;
+                        while i < locals.len() {
+                            if locals[i].0 == args[1] {
+                                locals.remove(i);
+                                break;
+                            }
+                        }
+                    },
+                    _ => {
+                        let (key, value) = (args[0].to_string(), args[1].to_string());
+                        locals.push((key, value));
+                    },
+                };
                 env::set_exit_status(0);
             },
             "cd" => {
