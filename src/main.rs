@@ -1,4 +1,4 @@
-extern crate linenoise;
+extern crate rustecla;
 extern crate libc;
 
 use std::old_io::fs;
@@ -36,26 +36,23 @@ fn main() {
     }   // c_int == i32
 
     let mut locals: Vec<(String, String)> = Vec::new();
+    let (line_length, hist_size) = (1024u64, 2048u64);
+    let mut gl = rustecla::new_gl(line_length, hist_size);
 
-    linenoise::history_load("~/.patina_history");
+    rustecla::load_history(gl, "~/.patina_history", "Is this necesary?");
 
-    linenoise::set_callback(complete::complete);
+    //linenoise::set_callback(complete::complete);
     loop {
         let stat = env::get_exit_status();
         let cwd = match env::current_dir(){
             Ok(p) => {p},
             Err(f) => {panic!(f.to_string())},
         };
-        let input = match linenoise::prompt(prompt::get_prompt(stat as isize).as_slice()) {
-            Some(st) => st,
-            None => "".to_string(),
-        };
-/*        if input == "Input not parsed".to_string() {
-            print!("Input not parsed");
-            continue;
-        }*/
+
+        let input = rustecla::get_line(gl, prompt::get_prompt(stat as isize).as_slice());
+
         if input.trim() == "" {continue}
-        linenoise::history_add(input.as_slice());
+        //linenoise::history_add(input.as_slice());
         let opt: Vec<&str> = input.trim().words().collect();
         let (cmd, args) = (opt[0], opt.slice_from(1)); // &s[start..] syntax fails
 
@@ -75,7 +72,7 @@ fn main() {
                         env::remove_var(&args[1]);
                     },
                     "-e" => {
-                        let mut i = 0us;
+                        let mut i: usize = 0;
                         while i < locals.len() {
                             if locals[i].0 == args[1] {
                                 locals.remove(i);
@@ -105,7 +102,7 @@ fn main() {
                 env::set_exit_status(0);
             },
             "clear" => {
-                linenoise::clear_screen();
+                rustecla::clear(gl);
                 env::set_exit_status(0);
             },
             "fg" => {//not functional
@@ -154,5 +151,5 @@ fn main() {
             },
         };
     }
-    linenoise::history_save("~/.patina_history");
+    rustecla::save_history(gl, "~/.patina_history", "Is this nicesary?", 2048);
 }

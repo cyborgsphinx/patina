@@ -46,7 +46,7 @@ pub fn string(st: String, vars: Vec<(String, String)>) -> Vec<String> {
                 let value = match env::var(key) {
                     Ok(val) => val,
                     Err(_) => {
-                        let mut i = 0us;
+                        let mut i: usize = 0;
                         let mut val: (String, String) = Default::default();
                         while i < vars.len() {
                             if vars[i].0 == key.to_string() {
@@ -147,8 +147,8 @@ pub fn path(st: &str) -> String {
     return res;
 }
 
-fn main() {
+#[test]
+fn path_test() {
     let this = path("~/Downloads");
     assert_eq!(this.as_slice(), "/home/james/Downloads");
-    println!("You did it!");
 }

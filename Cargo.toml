@@ -1,9 +1,13 @@
 [package]
-
 name = "patina"
 version = "0.0.1"
 authors = ["James Hannah <jhannah8124@gmail.com>"]
 
-[dependencies.linenoise]
+[[bin]]
+name = "patina"
 
-git = "https://github.com/cmr/linenoise-rs.git"
+#[dependencies.linenoise]
+#git = "https://github.com/cmr/linenoise-rs.git"
+
+[dependencies.rustecla]
+git = "https://github.com/cyborgsphinx/rustecla.git"

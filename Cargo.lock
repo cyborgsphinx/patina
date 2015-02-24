@@ -2,27 +2,11 @@
 name = "patina"
 version = "0.0.1"
 dependencies = [
- "linenoise 0.0.4 (git+https://github.com/cmr/linenoise-rs.git)",
+ "rustecla 0.0.1 (git+https://github.com/cyborgsphinx/rustecla.git)",
 ]
 
 [[package]]
-name = "gcc"
-version = "0.1.7"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-
-[[package]]
-name = "linenoise"
-version = "0.0.4"
-source = "git+https://github.com/cmr/linenoise-rs.git#7ea86c9df653091edde480e2490f29d210203e3e"
-dependencies = [
- "linenoise-sys 1.0.1 (git+https://github.com/cmr/linenoise-rs.git)",
-]
-
-[[package]]
-name = "linenoise-sys"
-version = "1.0.1"
-source = "git+https://github.com/cmr/linenoise-rs.git#7ea86c9df653091edde480e2490f29d210203e3e"
-dependencies = [
- "gcc 0.1.7 (registry+https://github.com/rust-lang/crates.io-index)",
-]
+name = "rustecla"
+version = "0.0.1"
+source = "git+https://github.com/cyborgsphinx/rustecla.git#e1a5548dde3bd83a4bf8fc220f3e9f2de41ea18d"
 
