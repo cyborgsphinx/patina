@@ -6,8 +6,5 @@ authors = ["James Hannah <jhannah8124@gmail.com>"]
 [[bin]]
 name = "patina"
 
-#[dependencies.linenoise]
-#git = "https://github.com/cmr/linenoise-rs.git"
-
 [dependencies.rustecla]
 git = "https://github.com/cyborgsphinx/rustecla.git"

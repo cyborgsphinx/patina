@@ -23,5 +23,10 @@ More to come
 ##TODO
 
 Finish working on shell built-ins
+- fg
+- bg
+- jobs
+- set (fish-like)
+- others as they are thought of
 
 Colours
