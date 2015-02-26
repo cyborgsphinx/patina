@@ -8,5 +8,5 @@ dependencies = [
 [[package]]
 name = "rustecla"
 version = "0.0.1"
-source = "git+https://github.com/cyborgsphinx/rustecla.git#e1a5548dde3bd83a4bf8fc220f3e9f2de41ea18d"
+source = "git+https://github.com/cyborgsphinx/rustecla.git#ffa92a44805171f410794a765aa171acc2fee399"
 

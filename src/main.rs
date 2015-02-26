@@ -1,14 +1,20 @@
 extern crate rustecla;
 extern crate libc;
 
-use std::old_io::fs;
+use std::fs;
 use std::os;
 use std::old_io::process;
 use std::old_io::process::{Command, ProcessExit};
-use std::old_path::Path;
+use std::old_path::posix::Path;
+use std::old_io::fs::PathExtensions;
 use std::str;
 use std::old_io::process::StdioContainer::InheritFd;
 use std::env;
+use std::fs::PathExt;
+use std::str::StrExt;
+use std::ffi::{CString, CStr};
+use libc::{c_char, c_int};
+use rustecla::WordCompletion;
 
 mod prompt;
 mod cd;
@@ -58,10 +64,10 @@ fn main() {
 
         match cmd.as_slice() {
             "exit" => {break},
-            "echo" => {
+            /*"echo" => { //work on this
                 echo::put(echo::parse(args));   //TODO expand and improve
                 env::set_exit_status(0);
-            },
+            },*/
             "set" => {
                 match args[0].as_slice() {
                     "-x" => {
