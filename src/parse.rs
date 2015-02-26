@@ -131,9 +131,9 @@ pub fn string(st: String, vars: Vec<(String, String)>) -> Vec<String> {
 // string parsing for creating paths (~ -> /home/$USER)
 pub fn path(st: &str) -> String {
     let mut res = String::new();
-    let home: String = match os::getenv("HOME") { // os::homedir returns a path, this retruns a string
-        Some(val) => val,
-        None => "Home directory not set".to_string() // will return this string
+    let home: String = match env::var("HOME") { // os::homedir returns a path, this retruns a string
+        Ok(val) => val,
+        Err(..) => "Home directory not set".to_string() // will return this string
     };
     if st.starts_with("~/") {
         res.push_str(home.as_slice());
@@ -149,6 +149,6 @@ pub fn path(st: &str) -> String {
 
 #[test]
 fn path_test() {
-    let this = path("~/Downloads");
+    let this = path("~/Downloads".to_string());
     assert_eq!(this.as_slice(), "/home/james/Downloads");
 }

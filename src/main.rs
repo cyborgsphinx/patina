@@ -5,7 +5,7 @@ use std::fs;
 use std::os;
 use std::old_io::process;
 use std::old_io::process::{Command, ProcessExit};
-use std::old_path::posix::Path;
+use std::path::{Path, PathBuf};
 use std::old_io::fs::PathExtensions;
 use std::str;
 use std::old_io::process::StdioContainer::InheritFd;
@@ -57,7 +57,7 @@ fn main() {
         let input = rustecla::get_line(gl, prompt::get_prompt(stat as isize).as_slice());
 
         if input.trim() == "" {continue}
-        let args: Vec<&str> = input.trim().words().collect();
+        let mut args: Vec<&str> = input.trim().words().collect();
         let cmd = args.remove(0); // take args[0] out, put it in cmd, move eveything in args left
 
         match cmd.as_slice() {
@@ -93,17 +93,16 @@ fn main() {
             },
             "cd" => {
                 //TODO implement flags
-                let mut chdir: Path;
+                let mut chdir: PathBuf;
                 if args.is_empty() {    //cd called alone; equivalent to cd ~
                     chdir = match env::home_dir() {
                         Some(d) => {d},
                         None => {panic!("You have no home")},   //TODO improve
                     };
                 } else {
-                    chdir = Path::new(parse::path(args[0]));
+                    chdir = PathBuf::new(parse::path(args[0]).as_slice());
                 }
-                cd::ch_dir(chdir);
-                env::set_exit_status(0);
+                env::set_exit_status(cd::ch_dir(chdir));
             },
             "clear" => {
                 rustecla::clear(gl);
@@ -128,7 +127,7 @@ fn main() {
                         },
                     };
                 } else {*/  // not ready for forking yet
-                let process = Command::new(cmd).args(args).stdin(InheritFd(0)).stdout(InheritFd(1)).stderr(InheritFd(2)).spawn();
+                let process = Command::new(cmd).args(args.as_slice()).stdin(InheritFd(0)).stdout(InheritFd(1)).stderr(InheritFd(2)).spawn();
                 if process.is_err() {
                     println!("patina: command not found: {}", cmd);
                     env::set_exit_status(127);

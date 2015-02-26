@@ -1,22 +1,23 @@
 use std::os;
-use std::old_path::Path;
+use std::path::PathBuf;
+use std::old_path;
 use std::old_io::process::Command;
 use std::string::String;
 
 // really just a wrapper around os::change_dir()
-// returns 1 for success and 0 for failure
-pub fn ch_dir(dest: Path) -> usize {
-    match os::change_dir(&dest) {
-        Ok(_) => 1,
-        Err(_) => {
+// returns 0 for success and 1 for failure
+pub fn ch_dir(dest: PathBuf) -> i32 {
+    match os::change_dir(&old_path::Path::new(dest.to_str().unwrap())) {
+        Ok(..) => 0,
+        Err(..) => {
             println!("Failed changing directory");
-            0
+            1
         },
     }
 }
 
 pub fn main() {
-    let dir = Path::new("..");
+    let dir = PathBuf::new("..");
     let num = ch_dir(dir);
     println!("{}", num);
     let out = match Command::new("pwd").output() {
