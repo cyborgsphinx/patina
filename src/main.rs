@@ -45,22 +45,20 @@ fn main() {
     let (line_length, hist_size) = (1024u64, 2048u64);
     let mut gl = rustecla::new_gl(line_length, hist_size);
 
-    rustecla::load_history(gl, "~/.patina_history", "Is this necesary?");
+    rustecla::load_history(gl, "~/.patina_history", "Load history");
 
-    //linenoise::set_callback(complete::complete);
     loop {
         let stat = env::get_exit_status();
         let cwd = match env::current_dir(){
             Ok(p) => {p},
-            Err(f) => {panic!(f.to_string())},
+            Err(f) => {panic!(f.to_string())},//should probably not have that
         };
 
         let input = rustecla::get_line(gl, prompt::get_prompt(stat as isize).as_slice());
 
         if input.trim() == "" {continue}
-        //linenoise::history_add(input.as_slice());
-        let opt: Vec<&str> = input.trim().words().collect();
-        let (cmd, args) = (opt[0], opt.slice_from(1)); // &s[start..] syntax fails
+        let args: Vec<&str> = input.trim().words().collect();
+        let cmd = args.remove(0); // take args[0] out, put it in cmd, move eveything in args left
 
         match cmd.as_slice() {
             "exit" => {break},
@@ -157,5 +155,5 @@ fn main() {
             },
         };
     }
-    rustecla::save_history(gl, "~/.patina_history", "Is this nicesary?", 2048);
+    rustecla::save_history(gl, "~/.patina_history", "Saved command:", 2048);
 }
