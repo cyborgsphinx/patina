@@ -4,7 +4,9 @@ extern crate libc;
 use std::fs;
 use std::os;
 use std::old_io::process;
-use std::old_io::process::{Command, ProcessExit};
+//use std::old_io::process::{Command, ProcessExit};
+use std::process::Command;
+use std::os::unix::ExitStatusExt;
 use std::path::{Path, PathBuf};
 use std::old_io::fs::PathExtensions;
 use std::str;
@@ -114,43 +116,26 @@ fn main() {
             "bg" => {//not functional
                 process::Process::kill(args[0].parse::<i32>().unwrap(), 25);//pid_t == i32
             },
-            _ => {  // I have no idea what the fuck to do here
-                /*if fork(args) {
-                    let process = Command::new(cmd).cwd(&cwd).args(args.slice_to(args.len()-1)).output();
-
-                    match process {
-                        Ok(out) => {
-                            print!("{}", String::from_utf8_lossy(out.output.as_slice()));
-                        },
-                        Err(f) => {
-                            println!("Error: {}", f);
-                        },
-                    };
-                } else {*/  // not ready for forking yet
-                let process = Command::new(cmd).args(args.as_slice()).stdin(InheritFd(0)).stdout(InheritFd(1)).stderr(InheritFd(2)).spawn();
-                if process.is_err() {
-                    println!("patina: command not found: {}", cmd);
-                    env::set_exit_status(127);
-                } else { //need to fix for arbitrary errors
-                    env::set_exit_status(0);
-                }
-                /*match process {
-                    Ok(stream) => {
-                        let out = stream.wait_with_output().unwrap();
-                        let pout = String::from_utf8(out.output).unwrap_or("Fuck".to_string());
-                        let perr = String::from_utf8(out.error).unwrap_or("Fuck".to_string());
-                        if !pout.is_empty() {
-                            print!("{}", pout);
-                        }
-                        if !perr.is_empty() {
-                            print!("{}", perr);
-                        }
+            _ => {//no forking yet
+                //let process = Command::new(cmd).args(args.as_slice()).stdin(InheritFd(0)).stdout(InheritFd(1)).stderr(InheritFd(2)).status();//old_io command
+                let process = Command::new(cmd).args(args.as_slice()).status();
+                match process {
+                    Ok(val) => {
+                        match val.code() {
+                            Some(num) => env::set_exit_status(num),
+                            None => match val.signal() {
+                                Some(num) => env::set_exit_status(num*-1),//tell me the signal
+                                None => env::set_exit_status(-1),
+                            },
+                        };
                     },
-                    Err(f) => {
-                        println!("Error: {}", f);
-                    },
-                };*/
-                //} the matching brace for else
+                    Err(..) => println!("patina: command not found: {}", cmd),
+                };
+                 //   println!("patina: command not found: {}", cmd);
+                   // env::set_exit_status(127);
+                //} else {// mabe toss in some match statements
+                 //   env::set_exit_status(process.unwrap().code().unwrap());
+                //}
             },
         };
     }
