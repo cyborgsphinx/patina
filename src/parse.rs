@@ -1,3 +1,6 @@
+#![feature(collections)]
+#![feature(os)]
+
 use std::os;
 use std::string::String;
 use std::vec::Vec;

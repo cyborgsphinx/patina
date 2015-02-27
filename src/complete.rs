@@ -1,9 +1,17 @@
+// not being used anymore
+
+#![feature(old_path)]
+#![feature(old_io)]
+#![feature(collections)]
+#![feature(os)]
+
 extern crate core;
 
 use std::string::String;
 use std::old_io::fs;
 use std::old_io::fs::PathExtensions;
 use std::os;
+use std::env;
 use std::str;
 use std::old_path::Path;
 
@@ -12,10 +20,13 @@ pub fn complete(st: &str) -> Vec<String> {
     let mut res: Vec<String> = Vec::new();
 
     if v.len() == 1 {
-        let search = match os::getenv("PATH") {
-            Some(p) => p,
-            None => "That didn't work".to_string(),
+        let search = match env::var("PATH") {
+            Ok(p) => p,
+            Err(..) => "That didn't work".to_string(),
         };
+         if search == "That didn't work".to_string() {
+             return Vec::new();
+         }
 
         let paths: Vec<&str> = search.as_slice().split(':').collect();
         for directory in paths.iter() {

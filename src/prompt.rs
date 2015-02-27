@@ -1,20 +1,26 @@
+#![feature(old_path)]
+#![feature(os)]
+#![feature(env)]
+
 use std::char;
 use std::os;
+use std::env;
 use std::string::String;
 use std::str;
 use std::num;
 use std::num::strconv;
+use std::ffi::OsStr;
 
 pub fn get_prompt(status: isize) -> String {
-    let cwd = match os::getcwd() {
+    let cwd = match env::current_dir() {
         Ok(d) => {d},
         Err(f) => {panic!(f.to_string())},
     };
-    let dir = match cwd.filename() {
+    let dir = match cwd.file_name() {
         Some(d) => {d},
-        None => {b"/"},
+        None => {OsStr::from_str("/")},
     };
-    let dispdir = str::from_utf8(dir).unwrap_or("Could not find directory");
+    let dispdir = dir.to_str().unwrap_or("Could not find directory");
     let mut pro = String::new();
     let fstat: f64 = num::cast(status).unwrap();
     //this function is really complicated
@@ -26,7 +32,7 @@ pub fn get_prompt(status: isize) -> String {
         strconv::SignificantDigits::DigAll, //this could go poorly, but i hope not
         strconv::ExponentFormat::ExpNone,
         false);
-    if status != 0 {
+    if status != 0 && !flag {
         pro.push('(');
         pro.push_str(dispstat.as_slice());
         pro.push(')');

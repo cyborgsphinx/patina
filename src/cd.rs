@@ -1,3 +1,7 @@
+#![feature(old_io)]
+#![feature(os)]
+#![feature(old_path)]
+
 use std::os;
 use std::path::PathBuf;
 use std::old_path;

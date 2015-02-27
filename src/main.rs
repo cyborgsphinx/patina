@@ -1,22 +1,18 @@
+#![feature(core, env, fs, libc, path, process, os, std_misc, str_words)]
+
 extern crate rustecla;
 extern crate libc;
 
 use std::fs;
 use std::os;
-use std::old_io::process;
 //use std::old_io::process::{Command, ProcessExit};
 use std::process::Command;
 use std::os::unix::ExitStatusExt;
 use std::path::{Path, PathBuf};
-use std::old_io::fs::PathExtensions;
 use std::str;
-use std::old_io::process::StdioContainer::InheritFd;
 use std::env;
 use std::fs::PathExt;
 use std::str::StrExt;
-use std::ffi::{CString, CStr};
-use libc::{c_char, c_int};
-use rustecla::WordCompletion;
 
 mod prompt;
 mod cd;
@@ -45,16 +41,12 @@ fn main() {
 
     let mut locals: Vec<(String, String)> = Vec::new();
     let (line_length, hist_size) = (1024u64, 2048u64);
-    let mut gl = rustecla::new_gl(line_length, hist_size);
+    let gl = rustecla::new_gl(line_length, hist_size);
 
     rustecla::load_history(gl, "~/.patina_history", "Load history");
 
     loop {
         let stat = env::get_exit_status();
-        let cwd = match env::current_dir(){
-            Ok(p) => {p},
-            Err(f) => {panic!(f.to_string())},//should probably not have that
-        };
 
         let input = rustecla::get_line(gl, prompt::get_prompt(stat as isize).as_slice());
 
@@ -84,6 +76,7 @@ fn main() {
                                 locals.remove(i);
                                 break;
                             }
+                            i += 1;
                         }
                     },
                     _ => {
@@ -111,10 +104,16 @@ fn main() {
                 env::set_exit_status(0);
             },
             "fg" => {//not functional
-                process::Process::kill(args[0].parse::<i32>().unwrap(), 25);//SIGCONT == 25
+                //process::Process::kill(args[0].parse::<i32>().unwrap(), 25);//SIGCONT == 25
+                unsafe {
+                    self::libc::funcs::posix88::signal::kill(args[0].parse::<i32>().unwrap(), 25);
+                }
             },
             "bg" => {//not functional
-                process::Process::kill(args[0].parse::<i32>().unwrap(), 25);//pid_t == i32
+                //process::Process::kill(args[0].parse::<i32>().unwrap(), 25);//pid_t == i32
+                unsafe {
+                    self::libc::funcs::posix88::signal::kill(args[0].parse::<i32>().unwrap(), 25);
+                }
             },
             _ => {//no forking yet
                 //let process = Command::new(cmd).args(args.as_slice()).stdin(InheritFd(0)).stdout(InheritFd(1)).stderr(InheritFd(2)).status();//old_io command
@@ -129,7 +128,10 @@ fn main() {
                             },
                         };
                     },
-                    Err(..) => println!("patina: command not found: {}", cmd),
+                    Err(..) => {
+                        println!("patina: command not found: {}", cmd);
+                        env::set_exit_status(127);
+                    },
                 };
                  //   println!("patina: command not found: {}", cmd);
                    // env::set_exit_status(127);
