@@ -1,12 +1,5 @@
-#![feature(old_path)]
-#![feature(os)]
-#![feature(env)]
-
-use std::char;
-use std::os;
 use std::env;
 use std::string::String;
-use std::str;
 use std::num;
 use std::num::strconv;
 use std::ffi::OsStr;
@@ -43,12 +36,16 @@ pub fn get_prompt(status: isize) -> String {
     return pro;
 }
 
-#[test]
-fn status_is_zero() {
-    assert!("src $ ", get_prompt(0));
-}
+#[cfg(test)]
+mod tests {
+    use prompt::get_prompt;
+    #[test]
+    fn status_is_zero() {
+        assert!("src $ ", get_prompt(0));
+    }
 
-#[test]
-fn status_non_zero() {
-    assert!("(101) src $ ", get_prompt(101));
+    #[test]
+    fn status_non_zero() {
+        assert!("(101) src $ ", get_prompt(101));
+    }
 }

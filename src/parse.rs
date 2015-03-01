@@ -1,7 +1,3 @@
-#![feature(collections)]
-#![feature(os)]
-
-use std::os;
 use std::string::String;
 use std::vec::Vec;
 use std::str::StrExt;
@@ -56,6 +52,7 @@ pub fn string(st: String, vars: Vec<(String, String)>) -> Vec<String> {
                                 val = vars[i].clone();
                                 break;
                             }
+                            i += 1;
                         }
                         val.1
                     },

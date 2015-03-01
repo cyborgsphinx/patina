@@ -2,6 +2,8 @@
 name = "patina"
 version = "0.0.1"
 authors = ["James Hannah <jhannah8124@gmail.com>"]
+repository = "https://github.com/cyborgsphinx/patina"
+license = "MIT"
 
 [[bin]]
 name = "patina"

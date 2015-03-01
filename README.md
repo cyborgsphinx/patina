@@ -15,7 +15,6 @@ More to come
 
 - cd
 - clear
-- echo
 - exit
 
 More to come

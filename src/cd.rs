@@ -1,12 +1,6 @@
-#![feature(old_io)]
-#![feature(os)]
-#![feature(old_path)]
-
 use std::os;
 use std::path::PathBuf;
-use std::old_path;
-use std::old_io::process::Command;
-use std::string::String;
+use std::old_path;// would prefer os::change_dir() to not need this
 
 // really just a wrapper around os::change_dir()
 // returns 0 for success and 1 for failure
@@ -20,13 +14,21 @@ pub fn ch_dir(dest: PathBuf) -> i32 {
     }
 }
 
-pub fn main() {
-    let dir = PathBuf::new("..");
-    let num = ch_dir(dir);
-    println!("{}", num);
-    let out = match Command::new("pwd").output() {
-        Ok(p) => {p},
-        Err(_) => {panic!("Well fuck")},
-    };
-    println!("{}", String::from_utf8_lossy(out.output.as_slice()));
+#[cfg(test)]
+mod tests {
+    use cd::change_dir;
+
+    #[test]
+    fn test_ok() {
+        let dir = PathBuf::new("~/Downloads");
+        let num = ch_dir(dir);
+        assert_eq!(num, 0);
+    }
+
+    #[test]
+    fn test_err() {
+        let dir = PathBuf::new("~/Uploads"); // i don't have this directory
+        let num = ch_dir(dir);
+        assert_eq!(num, 1);
+    }
 }

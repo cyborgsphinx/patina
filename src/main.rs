@@ -1,24 +1,17 @@
-#![feature(core, env, fs, libc, path, process, os, std_misc, str_words)]
+#![feature(collections, core, env, libc, path, process, old_path, os, std_misc, str_words)]
 
 extern crate rustecla;
 extern crate libc;
 
-use std::fs;
-use std::os;
-//use std::old_io::process::{Command, ProcessExit};
 use std::process::Command;
 use std::os::unix::ExitStatusExt;
-use std::path::{Path, PathBuf};
-use std::str;
+use std::path::PathBuf;
 use std::env;
-use std::fs::PathExt;
 use std::str::StrExt;
 
 mod prompt;
 mod cd;
 mod parse;
-mod echo;
-mod complete;
 mod signals;
 
 fn main() {
