@@ -147,8 +147,13 @@ pub fn path(st: &str) -> String {
     return res;
 }
 
-#[test]
-fn path_test() {
-    let this = path("~/Downloads".to_string());
-    assert_eq!(this.as_slice(), "/home/james/Downloads");
+#[cfg(test)]
+mod test {
+    use parse::path;
+
+    #[test]
+    fn path_test() {
+        let this = path("~/Downloads");
+        assert_eq!(this.as_slice(), "/home/james/Downloads");
+    }
 }

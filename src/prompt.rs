@@ -39,13 +39,30 @@ pub fn get_prompt(status: isize) -> String {
 #[cfg(test)]
 mod tests {
     use prompt::get_prompt;
+    use std::env;
+    use std::string::String;
+    use std::path;
+
     #[test]
     fn status_is_zero() {
-        assert!("src $ ", get_prompt(0));
+        let dir = env::current_dir().unwrap();
+        let file = dir.file_name().unwrap();
+        let dir_st = file.to_str().unwrap();
+        let mut out = String::new();
+        out.push_str(dir_st);
+        out.push_str(" $ ");
+        assert_eq!(out, get_prompt(0));
     }
 
     #[test]
     fn status_non_zero() {
-        assert!("(101) src $ ", get_prompt(101));
+        let dir = env::current_dir().unwrap();
+        let file = dir.file_name().unwrap();
+        let dir_st = file.to_str().unwrap();
+        let mut out = String::new();
+        out.push_str("(101) ");
+        out.push_str(dir_st);
+        out.push_str(" $ ");
+        assert_eq!(out, get_prompt(101));
     }
 }

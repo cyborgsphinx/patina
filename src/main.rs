@@ -14,6 +14,7 @@ mod cd;
 mod parse;
 mod signals;
 
+#[cfg(not(test))]
 fn main() {
     println!("Patina Shell\nPrealpha");
 
