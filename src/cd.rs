@@ -1,16 +1,12 @@
-use std::os;
+//use std::os;
 use std::path::PathBuf;
-use std::old_path;// would prefer os::change_dir() to not need this
+use std::env;
+//use std::old_path;// would prefer os::change_dir() to not need this
 
 // really just a wrapper around os::change_dir()
 // returns 0 for success and 1 for failure
 pub fn ch_dir(dest: PathBuf) -> i32 {
-    let st = match dest.to_str() {
-        Some(val) => val,
-        None => "",
-    };
-    let dir = old_path::Path::new(st);
-    match os::change_dir(&dir) {
+    match env::set_current_dir(&dest) {
         Ok(..) => 0,
         Err(..) => {
             println!("Failed changing directory");

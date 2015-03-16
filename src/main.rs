@@ -1,4 +1,4 @@
-#![feature(collections, core, env, libc, path, process, old_path, os, std_misc, str_words)]
+#![feature(collections, core, exit_status, libc, std_misc, str_words)]
 
 extern crate rustecla;
 extern crate libc;

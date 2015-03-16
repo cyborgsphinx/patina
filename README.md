@@ -29,3 +29,5 @@ Finish working on shell built-ins
 - others as they are thought of
 
 Colours
+
+Globbing

@@ -3,6 +3,7 @@ use std::string::String;
 use std::num;
 use std::num::strconv;
 use std::ffi::OsStr;
+use std::path::PathBuf;
 
 pub fn get_prompt(status: isize) -> String {
     let cwd = match env::current_dir() {
@@ -13,7 +14,13 @@ pub fn get_prompt(status: isize) -> String {
         Some(d) => {d},
         None => {OsStr::from_str("/")},
     };
-    let dispdir = dir.to_str().unwrap_or("Could not find directory");
+//    let dispdir = dir.to_str().unwrap_or("Could not find directory");
+    let dispdir = match cwd.to_str() {
+        Some("/home/james") => "~",
+        Some(var) => dir.to_str().unwrap_or("dir not found"),
+        None => "dir not found",
+//        _ => dir,
+    };
     let mut pro = String::new();
     let fstat: f64 = num::cast(status).unwrap();
     //this function is really complicated
@@ -42,9 +49,13 @@ mod tests {
     use std::env;
     use std::string::String;
     use std::path;
+    //make constant directory
+    use std::path::Path;
 
     #[test]
     fn status_is_zero() {
+        let root = Path::new("/tmp");
+        assert!(env::set_current_dir(&root).is_ok());
         let dir = env::current_dir().unwrap();
         let file = dir.file_name().unwrap();
         let dir_st = file.to_str().unwrap();
@@ -56,6 +67,8 @@ mod tests {
 
     #[test]
     fn status_non_zero() {
+        let root = Path::new("/tmp");
+        assert!(env::set_current_dir(&root).is_ok());
         let dir = env::current_dir().unwrap();
         let file = dir.file_name().unwrap();
         let dir_st = file.to_str().unwrap();
