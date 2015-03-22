@@ -4,10 +4,10 @@ extern crate rustecla;
 extern crate libc;
 
 use std::process::Command;
-use std::os::unix::ExitStatusExt;
+use std::os::unix::process::ExitStatusExt;
 use std::path::PathBuf;
 use std::env;
-use std::str::StrExt;
+//use std::str::StrExt;
 
 mod prompt;
 mod cd;

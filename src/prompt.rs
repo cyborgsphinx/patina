@@ -10,16 +10,17 @@ pub fn get_prompt(status: isize) -> String {
         Ok(d) => {d},
         Err(f) => {panic!(f.to_string())},
     };
+    let home = match env::home_dir() {
+        Some(p) => {p},
+        None => {PathBuf::new("/home/james")},
+    };
     let dir = match cwd.file_name() {
         Some(d) => {d},
         None => {OsStr::from_str("/")},
     };
-//    let dispdir = dir.to_str().unwrap_or("Could not find directory");
-    let dispdir = match cwd.to_str() {
-        Some("/home/james") => "~",
-        Some(var) => dir.to_str().unwrap_or("dir not found"),
-        None => "dir not found",
-//        _ => dir,
+    let dispdir = match cwd == home {
+        true => "~",
+        false => dir.to_str().unwrap_or("dir not found"),
     };
     let mut pro = String::new();
     let fstat: f64 = num::cast(status).unwrap();
@@ -40,7 +41,7 @@ pub fn get_prompt(status: isize) -> String {
     }
     pro.push_str(dispdir);
     pro.push_str(" $ ");
-    return pro;
+    pro
 }
 
 #[cfg(test)]
