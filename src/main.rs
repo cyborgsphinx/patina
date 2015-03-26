@@ -1,4 +1,4 @@
-#![feature(collections, core, exit_status, libc, std_misc, str_words)]
+#![feature(collections, convert, core, exit_status, libc, std_misc, str_words)]
 
 extern crate rustecla;
 extern crate libc;
@@ -7,6 +7,8 @@ use std::process::Command;
 use std::os::unix::process::ExitStatusExt;
 use std::path::PathBuf;
 use std::env;
+use std::convert::From;
+use std::convert::AsRef;
 //use std::str::StrExt;
 
 mod prompt;
@@ -42,20 +44,20 @@ fn main() {
     loop {
         let stat = env::get_exit_status();
 
-        let input = rustecla::get_line(gl, prompt::get_prompt(stat as isize).as_slice());
+        let input = rustecla::get_line(gl, prompt::get_prompt(stat as isize).as_ref());
 
         if input.trim() == "" {continue}
         let mut args: Vec<&str> = input.trim().words().collect();
         let cmd = args.remove(0); // take args[0] out, put it in cmd, move eveything in args left
 
-        match cmd.as_slice() {
+        match cmd.as_ref() {
             "exit" => {break},
             /*"echo" => { //work on this
                 echo::put(echo::parse(args));   //TODO expand and improve
                 env::set_exit_status(0);
             },*/
             "set" => {
-                match args[0].as_slice() {
+                match args[0].as_ref() {
                     "-x" => {
                         let (key, value) = (args[1].to_string(), args[2].to_string());
                         env::set_var(&key, &value);
@@ -89,7 +91,10 @@ fn main() {
                         None => {panic!("You have no home")},   //TODO improve
                     };
                 } else {
-                    chdir = PathBuf::new(parse::path(args[0]).as_slice());
+//                    chdir = PathBuf::new();
+                    chdir = From::from(args[0]);
+//                    let dir = parse::Path(args[0]);
+//                    chdir.push(dir);
                 }
                 env::set_exit_status(cd::ch_dir(chdir));
             },
@@ -111,7 +116,7 @@ fn main() {
             },
             _ => {//no forking yet
                 //let process = Command::new(cmd).args(args.as_slice()).stdin(InheritFd(0)).stdout(InheritFd(1)).stderr(InheritFd(2)).status();//old_io command
-                let process = Command::new(cmd).args(args.as_slice()).status();
+                let process = Command::new(cmd).args(args.as_ref()).status();
                 match process {
                     Ok(val) => {
                         match val.code() {

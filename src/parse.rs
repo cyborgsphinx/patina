@@ -136,7 +136,7 @@ pub fn path(st: &str) -> String {
         Err(..) => "Home directory not set".to_string() // will return this string
     };
     if st.starts_with("~/") {
-        res.push_str(home.as_slice());
+        res.push_str(home.as_ref());
         res.push('/');
         for c in st.slice_chars(2, st.len()).chars() {
             res.push(c);
@@ -154,6 +154,6 @@ mod test {
     #[test]
     fn path_test() {
         let this = path("~/Downloads");
-        assert_eq!(this.as_slice(), "/home/james/Downloads");
+        assert_eq!(this, "/home/james/Downloads");
     }
 }

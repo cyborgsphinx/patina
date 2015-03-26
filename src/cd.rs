@@ -18,19 +18,20 @@ pub fn ch_dir(dest: PathBuf) -> i32 {
 #[cfg(test)]
 mod tests {
     use cd::ch_dir;
-    use std::path::PathBuf;
+    //use std::path::PathBuf;
+    use std::path::Path;
 
     #[test]
     fn test_ok() {
-        let dir = PathBuf::new("/tmp");
-        let num = ch_dir(dir);
+        let dir = Path::new("/tmp");
+        let num = ch_dir(dir.to_path_buf());
         assert_eq!(num, 0);
     }
 
     #[test]
     fn test_err() {
-        let dir = PathBuf::new("/tup");
-        let num = ch_dir(dir);
+        let dir = Path::new("/tup");
+        let num = ch_dir(dir.to_path_buf());
         assert_eq!(num, 1);
     }
 }

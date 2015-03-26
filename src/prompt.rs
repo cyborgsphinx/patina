@@ -12,7 +12,7 @@ pub fn get_prompt(status: isize) -> String {
     };
     let home = match env::home_dir() {
         Some(p) => {p},
-        None => {PathBuf::new("/home/james")},
+        None => {PathBuf::new()},
     };
     let dir = match cwd.file_name() {
         Some(d) => {d},
@@ -35,7 +35,7 @@ pub fn get_prompt(status: isize) -> String {
         false);
     if status != 0 && !flag {
         pro.push('(');
-        pro.push_str(dispstat.as_slice());
+        pro.push_str(dispstat.as_ref());
         pro.push(')');
         pro.push(' ');
     }
