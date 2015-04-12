@@ -16,7 +16,7 @@ pub fn get_prompt(status: isize) -> String {
     };
     let dir = match cwd.file_name() {
         Some(d) => {d},
-        None => {OsStr::from_str("/")},
+        None => {OsStr::new("/")},
     };
     let dispdir = match cwd == home {
         true => "~",
