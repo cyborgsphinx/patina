@@ -1,7 +1,5 @@
-//use std::os;
 use std::path::PathBuf;
 use std::env;
-//use std::old_path;// would prefer os::change_dir() to not need this
 
 // really just a wrapper around os::change_dir()
 // returns 0 for success and 1 for failure
@@ -18,7 +16,6 @@ pub fn ch_dir(dest: PathBuf) -> i32 {
 #[cfg(test)]
 mod tests {
     use cd::ch_dir;
-    //use std::path::PathBuf;
     use std::path::Path;
 
     #[test]

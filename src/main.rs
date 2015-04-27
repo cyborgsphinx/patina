@@ -1,4 +1,4 @@
-#![feature(collections, core, exit_status, libc, std_misc, str_words)]
+#![feature(collections, exit_status, libc)]
 
 extern crate rustecla;
 extern crate libc;
@@ -9,7 +9,6 @@ use std::path::PathBuf;
 use std::env;
 use std::convert::From;
 use std::convert::AsRef;
-//use std::str::StrExt;
 
 mod prompt;
 mod cd;
@@ -47,7 +46,7 @@ fn main() {
         let input = rustecla::get_line(gl, prompt::get_prompt(stat as isize).as_ref());
 
         if input.trim() == "" {continue}
-        let mut args: Vec<&str> = input.trim().words().collect();
+        let mut args: Vec<&str> = input.trim().split_whitespace().collect();
         let cmd = args.remove(0); // take args[0] out, put it in cmd, move eveything in args left
 
         match cmd.as_ref() {

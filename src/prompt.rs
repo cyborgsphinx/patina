@@ -1,7 +1,5 @@
 use std::env;
 use std::string::String;
-use std::num;
-use std::num::strconv;
 use std::ffi::OsStr;
 use std::path::PathBuf;
 
@@ -23,17 +21,8 @@ pub fn get_prompt(status: isize) -> String {
         false => dir.to_str().unwrap_or("dir not found"),
     };
     let mut pro = String::new();
-    let fstat: f64 = num::cast(status).unwrap();
-    //this function is really complicated
-    let (dispstat, flag) = strconv::float_to_str_common(
-        fstat,
-        10,
-        true,
-        strconv::SignFormat::SignNeg,
-        strconv::SignificantDigits::DigAll, //this could go poorly, but i hope not
-        strconv::ExponentFormat::ExpNone,
-        false);
-    if status != 0 && !flag {
+    let dispstat = format!("{}", status);
+    if status != 0 {
         pro.push('(');
         pro.push_str(dispstat.as_ref());
         pro.push(')');

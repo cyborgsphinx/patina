@@ -1,6 +1,5 @@
 use std::string::String;
 use std::vec::Vec;
-//use std::str::StrExt;
 use std::env;
 use std::default::Default;
 
@@ -22,7 +21,7 @@ pub fn string(st: String, vars: Vec<(String, String)>) -> Vec<String> {
     let mut in_dub_quotes = false;  // need separate flags for double and single quotes
     let mut out = String::new();
     // Expand variables with $, keep anything in between "" or ''
-    for word in st.words() {
+    for word in st.split_whitespace() {
         if word.starts_with("\"") {
             if in_sin_quotes {
                 out.push_str(word);
