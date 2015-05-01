@@ -21,15 +21,10 @@ pub fn get_prompt(status: isize) -> String {
         false => dir.to_str().unwrap_or("dir not found"),
     };
     let mut pro = String::new();
-    let dispstat = format!("{}", status);
     if status != 0 {
-        pro.push('(');
-        pro.push_str(dispstat.as_ref());
-        pro.push(')');
-        pro.push(' ');
+        pro.push_str(format!("({}) ", status).as_ref());
     }
-    pro.push_str(dispdir);
-    pro.push_str(" $ ");
+    pro.push_str(format!("{} $ ", dispdir).as_ref());
     pro
 }
 
