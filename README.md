@@ -4,6 +4,8 @@ A shell written in rust with design ideas from fish and bash
 
 Nowhere near feature complete
 
+Note -- Due to `.words()` being replaced with `.split_whitespace()` in 1.1.0, this will not compile with Rust 1.0.0.
+
 ##Features
 
 - Fish-like syntax (not trying to be bash/POSIX compatible)

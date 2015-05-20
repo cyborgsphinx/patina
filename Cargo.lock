@@ -6,7 +6,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "libc"
+version = "0.1.8"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+
+[[package]]
 name = "rustecla"
 version = "0.0.1"
-source = "git+https://github.com/cyborgsphinx/rustecla.git#ffa92a44805171f410794a765aa171acc2fee399"
+source = "git+https://github.com/cyborgsphinx/rustecla.git#670b5b08ff10b8ec00a99d174da767abaf6d801f"
+dependencies = [
+ "libc 0.1.8 (registry+https://github.com/rust-lang/crates.io-index)",
+]
 
