@@ -40,7 +40,7 @@ pub fn string(st: String, vars: Vec<(String, String)>) -> Vec<String> {
             if in_dub_quotes || in_sin_quotes {
                 res.push(word.to_string());
             } else {
-                let key = word.slice_chars(1, word.len());
+                let key = word.trim_left_matches('$');
                 let value = match env::var(key) {
                     Ok(val) => val,
                     Err(_) => {
@@ -137,7 +137,7 @@ pub fn path(st: &str) -> String {
     if st.starts_with("~/") {
         res.push_str(home.as_ref());
         res.push('/');
-        for c in st.slice_chars(2, st.len()).chars() {
+        for c in st.trim_left_matches("~/").chars() {
             res.push(c);
         }
     } else {

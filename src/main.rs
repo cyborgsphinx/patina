@@ -1,4 +1,4 @@
-#![feature(collections, exit_status, libc)]
+#![feature(exit_status)]
 
 extern crate rustecla;
 extern crate libc;

@@ -10,3 +10,6 @@ name = "patina"
 
 [dependencies.rustecla]
 git = "https://github.com/cyborgsphinx/rustecla.git"
+
+[dependencies]
+libc = "0.1.8"
