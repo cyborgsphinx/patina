@@ -2,9 +2,15 @@
 name = "patina"
 version = "0.0.1"
 dependencies = [
+ "glob 0.2.10 (registry+https://github.com/rust-lang/crates.io-index)",
  "libc 0.1.8 (registry+https://github.com/rust-lang/crates.io-index)",
  "rustecla 0.0.1 (git+https://github.com/cyborgsphinx/rustecla.git)",
 ]
+
+[[package]]
+name = "glob"
+version = "0.2.10"
+source = "registry+https://github.com/rust-lang/crates.io-index"
 
 [[package]]
 name = "libc"

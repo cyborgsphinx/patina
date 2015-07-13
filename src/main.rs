@@ -1,15 +1,15 @@
 extern crate patina;
 extern crate rustecla;
 extern crate libc;
+extern crate glob;
 
-use std::process::{self, Command};
-use std::os::unix::process::ExitStatusExt;
+use std::process;
 use std::path::PathBuf;
 use std::env;
 use std::convert::From;
 use std::convert::AsRef;
 
-use patina::{prompt, cd, signals};
+use patina::{execute, prompt, cd, signals};
 
 #[cfg(not(test))]
 fn main() {
@@ -110,28 +110,7 @@ fn main() {
                 }
             },
             _ => {//no forking yet
-                //let process = Command::new(cmd).args(args.as_slice()).stdin(InheritFd(0)).stdout(InheritFd(1)).stderr(InheritFd(2)).status();//old_io command
-                let process = Command::new(cmd).args(args.as_ref()).status();
-                match process {
-                    Ok(val) => {
-                        match val.code() {
-                            Some(num) => stat = num,
-                            None => match val.signal() {
-                                Some(num) => stat = num*-1, //tell me the signal
-                                None => stat = -1,
-                            },
-                        };
-                    },
-                    Err(..) => {
-                        println!("patina: command not found: {}", cmd);
-                        stat = 127;
-                    },
-                };
-                 //   println!("patina: command not found: {}", cmd);
-                   // env::set_exit_status(127);
-                //} else {// mabe toss in some match statements
-                 //   env::set_exit_status(process.unwrap().code().unwrap());
-                //}
+                stat = execute::run(cmd, args);
             },
         };
     }
