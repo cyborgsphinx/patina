@@ -1,5 +1,6 @@
 #![feature(collections, exit_status, libc)]
 
+extern crate patina;
 extern crate rustecla;
 extern crate libc;
 
@@ -10,10 +11,7 @@ use std::env;
 use std::convert::From;
 use std::convert::AsRef;
 
-mod prompt;
-mod cd;
-mod parse;
-mod signals;
+use patina::{prompt, cd, parse, signals};
 
 #[cfg(not(test))]
 fn main() {
