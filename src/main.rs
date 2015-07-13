@@ -1,17 +1,15 @@
-#![feature(exit_status)]
-
 extern crate patina;
 extern crate rustecla;
 extern crate libc;
 
-use std::process::Command;
+use std::process::{self, Command};
 use std::os::unix::process::ExitStatusExt;
 use std::path::PathBuf;
 use std::env;
 use std::convert::From;
 use std::convert::AsRef;
 
-use patina::{prompt, cd, parse, signals};
+use patina::{prompt, cd, signals};
 
 #[cfg(not(test))]
 fn main() {
@@ -38,8 +36,8 @@ fn main() {
 
     rustecla::load_history(gl, "~/.patina_history", "Load history");
 
+    let mut stat = 0;
     loop {
-        let stat = env::get_exit_status();
 
         let input = rustecla::get_line(gl, prompt::get_prompt(stat as isize).as_ref());
 
@@ -77,11 +75,11 @@ fn main() {
                         locals.push((key, value));
                     },
                 };
-                env::set_exit_status(0);
+                stat = 0;
             },
             "cd" => {
                 //TODO implement flags
-                let mut chdir: PathBuf;
+                let chdir: PathBuf;
                 if args.is_empty() {    //cd called alone; equivalent to cd ~
                     chdir = match env::home_dir() {
                         Some(d) => {d},
@@ -93,11 +91,11 @@ fn main() {
 //                    let dir = parse::Path(args[0]);
 //                    chdir.push(dir);
                 }
-                env::set_exit_status(cd::ch_dir(chdir));
+                stat = cd::ch_dir(chdir);
             },
             "clear" => {
                 rustecla::clear(gl);
-                env::set_exit_status(0);
+                stat = 0;
             },
             "fg" => {//not functional
                 //process::Process::kill(args[0].parse::<i32>().unwrap(), 25);//SIGCONT == 25
@@ -117,16 +115,16 @@ fn main() {
                 match process {
                     Ok(val) => {
                         match val.code() {
-                            Some(num) => env::set_exit_status(num),
+                            Some(num) => stat = num,
                             None => match val.signal() {
-                                Some(num) => env::set_exit_status(num*-1),//tell me the signal
-                                None => env::set_exit_status(-1),
+                                Some(num) => stat = num*-1, //tell me the signal
+                                None => stat = -1,
                             },
                         };
                     },
                     Err(..) => {
                         println!("patina: command not found: {}", cmd);
-                        env::set_exit_status(127);
+                        stat = 127;
                     },
                 };
                  //   println!("patina: command not found: {}", cmd);
@@ -138,4 +136,5 @@ fn main() {
         };
     }
     rustecla::save_history(gl, "~/.patina_history", "Saved command:", 2048);
+    process::exit(stat);
 }
