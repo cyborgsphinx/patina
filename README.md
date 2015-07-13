@@ -6,6 +6,8 @@ Nowhere near feature complete
 
 Note -- Due to `.words()` being replaced with `.split_whitespace()` in 1.1.0, this will not compile with Rust 1.0.0.
 
+Also, the manipulation of exit statuses is not yet stable, so nightlies are required for now.
+
 ##Features
 
 - Fish-like syntax (not trying to be bash/POSIX compatible)
