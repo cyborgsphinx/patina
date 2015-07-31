@@ -13,12 +13,18 @@ pub fn run(cmd: &str, args: Vec<&str>) -> i32 {
     };
     let mut child = Command::new(cmd);
     for arg in &args {
-        if !arg.starts_with("-") && arg.contains("*") || arg.contains("?") || arg.contains("[") {
-            match glob_with(arg, &options) {
+        if arg.contains("*") || arg.contains("?") || arg.contains("[") {
+            match glob_with(&arg, &options) {
                 //this looks bad. it probably is. but i'm not too concerned with errors right now.
                 Ok(vals) => {
-                    for val in vals {
-                        child.arg(val.unwrap_or(PathBuf::new()));
+                    let mut vals = vals.peekable();
+                    //if it's an empty iterator, we'll push it back in case it was actually a regex
+                    if vals.peek().is_none() {
+                        child.arg(arg);
+                    } else {
+                        for val in vals {
+                            child.arg(val.unwrap_or(PathBuf::new()));
+                        }
                     }
                 },
                 //on error, just add the arg as is
