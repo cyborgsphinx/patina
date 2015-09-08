@@ -1,13 +1,15 @@
 extern crate patina;
-extern crate rustecla;
 extern crate libc;
 extern crate glob;
+extern crate copperline;
 
 use std::process;
 use std::path::PathBuf;
 use std::env;
 use std::convert::From;
 use std::convert::AsRef;
+
+use copperline::{Copperline, Error};
 
 use patina::{execute, prompt, cd, signals};
 
@@ -31,15 +33,19 @@ fn main() {
     }   // c_int == i32
 
     let mut locals: Vec<(String, String)> = Vec::new();
-    let (line_length, hist_size) = (1024u64, 2048u64);
-    let gl = rustecla::new_gl(line_length, hist_size);
-
-    rustecla::load_history(gl, "~/.patina_history", "Load history");
+    let mut copper = Copperline::new();
 
     let mut stat = 0;
     loop {
 
-        let input = rustecla::get_line(gl, prompt::get_prompt(stat as isize).as_ref());
+        let input: String;
+        match copper.read_line(prompt::get_prompt(stat as isize).as_ref()){
+            Ok(st) => input = st,
+            Err(Error::EndOfFile) => break,
+            Err(Error::UnsupportedTerm) => {println!("Error: Unsupporter terminal"); break;},
+            Err(Error::InvalidUTF8) => {println!("Can't handle invalid UTF8 yet"); break;},
+            Err(Error::ErrNo(n)) => {println!("Error {:?}: failing", n); break;},
+        }
 
         if input.trim() == "" {continue}
         let mut args: Vec<&str> = input.trim().split_whitespace().collect();
@@ -86,15 +92,12 @@ fn main() {
                         None => {panic!("You have no home")},   //TODO improve
                     };
                 } else {
-//                    chdir = PathBuf::new();
                     chdir = From::from(args[0]);
-//                    let dir = parse::Path(args[0]);
-//                    chdir.push(dir);
                 }
                 stat = cd::ch_dir(chdir);
             },
             "clear" => {
-                rustecla::clear(gl);
+                //waiting for either copperline to deal with ^l or enough reason to connect to term library
                 stat = 0;
             },
             "fg" => {//not functional
@@ -114,6 +117,5 @@ fn main() {
             },
         };
     }
-    rustecla::save_history(gl, "~/.patina_history", "Saved command:", 2048);
     process::exit(stat);
 }

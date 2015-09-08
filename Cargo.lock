@@ -2,9 +2,23 @@
 name = "patina"
 version = "0.0.1"
 dependencies = [
+ "copperline 0.1.2 (registry+https://github.com/rust-lang/crates.io-index)",
  "glob 0.2.10 (registry+https://github.com/rust-lang/crates.io-index)",
  "libc 0.1.8 (registry+https://github.com/rust-lang/crates.io-index)",
- "rustecla 0.0.1 (git+https://github.com/cyborgsphinx/rustecla.git)",
+]
+
+[[package]]
+name = "bitflags"
+version = "0.1.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+
+[[package]]
+name = "copperline"
+version = "0.1.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+dependencies = [
+ "libc 0.1.8 (registry+https://github.com/rust-lang/crates.io-index)",
+ "nix 0.3.9 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
@@ -18,10 +32,11 @@ version = "0.1.8"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 
 [[package]]
-name = "rustecla"
-version = "0.0.1"
-source = "git+https://github.com/cyborgsphinx/rustecla.git#670b5b08ff10b8ec00a99d174da767abaf6d801f"
+name = "nix"
+version = "0.3.9"
+source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
+ "bitflags 0.1.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "libc 0.1.8 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 

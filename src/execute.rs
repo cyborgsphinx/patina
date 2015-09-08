@@ -1,10 +1,10 @@
-extern crate glob;
-
-use self::glob::{glob_with, MatchOptions};
+use glob::{glob_with, MatchOptions};
 use std::path::PathBuf;
 use std::process::Command;
 use std::os::unix::process::ExitStatusExt;
 
+///Runs a command with given arguments.
+///Returns the status, or the negative of the signal sent that caused termination (until I have a more firm grasp on that)
 pub fn run(cmd: &str, args: Vec<&str>) -> i32 {
     let options = MatchOptions {
         case_sensitive: true,               //case sensitivity - may change

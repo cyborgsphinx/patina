@@ -3,6 +3,8 @@ use std::string::String;
 use std::ffi::OsStr;
 use std::path::PathBuf;
 
+///Returns the prompt for the shell.
+///Currently only returns a default based on the status of the previous process.
 pub fn get_prompt(status: isize) -> String {
     let cwd = match env::current_dir() {
         Ok(d) => {d},

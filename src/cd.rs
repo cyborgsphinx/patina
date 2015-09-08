@@ -1,8 +1,8 @@
 use std::path::PathBuf;
 use std::env;
 
-// really just a wrapper around os::change_dir()
-// returns 0 for success and 1 for failure
+///Changes the operating directory of the shell.
+///Returns 0 for success and 1 for failure.
 pub fn ch_dir(dest: PathBuf) -> i32 {
     match env::set_current_dir(&dest) {
         Ok(..) => 0,
