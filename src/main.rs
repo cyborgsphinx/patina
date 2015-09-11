@@ -97,8 +97,10 @@ fn main() {
                 stat = cd::ch_dir(chdir);
             },
             "clear" => {
-                //waiting for either copperline to deal with ^l or enough reason to connect to term library
-                stat = 0;
+                match copper.clear_screen() {
+                    Ok(..) => stat = 0,
+                    Err(..) => stat = 1,
+                };
             },
             "fg" => {//not functional
                 //process::Process::kill(args[0].parse::<i32>().unwrap(), 25);//SIGCONT == 25

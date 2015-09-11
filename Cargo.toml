@@ -9,6 +9,6 @@ license = "MIT"
 name = "patina"
 
 [dependencies]
-libc = "0.1.8"
+libc = "0.1.10"
 glob = "0.2.10"
-copperline = "0.1.2"
+copperline = "0.1.3"

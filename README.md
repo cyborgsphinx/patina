@@ -4,9 +4,9 @@ A shell written in rust with design ideas from fish and bash
 
 Nowhere near feature complete
 
-Note -- Due to `.words()` being replaced with `.split_whitespace()` in 1.1.0, this will not compile with Rust 1.0.0.
+##Use
 
-Also, the manipulation of exit statuses is not yet stable, so nightlies are required for now.
+With the most recent rust, run `cargo run`. If you are likely to use signals like ctrl-c, run `./test`. This is because cargo doesn't seem to pass signal handling off to the program it's running.
 
 ##Features
 
@@ -22,10 +22,6 @@ More to come
 - exit
 
 More to come
-
-##Dependencies
-
-- [libtecla](http://www.astro.caltech.edu/~mcs/tecla)
 
 ##Building and Running
 Running `cargo build` should pull in any needed dependencies, including the line editor bindings. However, you will need the library itself installed.
