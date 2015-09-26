@@ -53,10 +53,22 @@ fn main() {
 
         match cmd.as_ref() {
             "exit" => {break},
-            /*"echo" => { //work on this
-                echo::put(echo::parse(args));   //TODO expand and improve
-                env::set_exit_status(0);
-            },*/
+            "echo" => { //work on this
+                match args[0] {
+                    "-n" => {
+                        for st in args[1..].iter() {
+                            print!("{} ", st);
+                        }
+                    },
+                    _ => {
+                        for st in args {
+                            print!("{} ", st);
+                        }
+                        print!("\n");
+                    },
+                };
+                stat = 0;
+            },
             "set" => {
                 match args[0].as_ref() {
                     "-x" => {
