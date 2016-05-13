@@ -7,16 +7,16 @@ use std::path::PathBuf;
 ///Currently only returns a default based on the status of the previous process.
 pub fn get_prompt(status: isize) -> String {
     let cwd = match env::current_dir() {
-        Ok(d) => d,
-        Err(f) => panic!(f.to_string()),
+        Ok(d) => {d},
+        Err(f) => {panic!(f.to_string())},
     };
     let home = match env::home_dir() {
-        Some(p) => p,
-        None => PathBuf::new(),
+        Some(p) => {p},
+        None => {PathBuf::new()},
     };
     let dir = match cwd.file_name() {
-        Some(d) => d,
-        None => OsStr::new("/"),
+        Some(d) => {d},
+        None => {OsStr::new("/")},
     };
     let dispdir = match cwd == home {
         true => "~",
@@ -36,7 +36,7 @@ mod tests {
     use std::env;
     use std::string::String;
     use std::path;
-    // make constant directory
+    //make constant directory
     use std::path::Path;
 
     #[test]

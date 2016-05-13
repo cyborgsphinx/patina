@@ -9,7 +9,7 @@ pub fn arguments(input: &str) -> String {
     if input.starts_with("~") || input.starts_with("./") {
         res = path(input);
     } else {
-        // res = string(input);
+        //res = string(input);
     }
 
     res
@@ -54,7 +54,7 @@ pub fn string(st: String, vars: Vec<(String, String)>) -> Vec<String> {
                             i += 1;
                         }
                         val.1
-                    }
+                    },
                 };
                 res.push(value);
             }
@@ -78,6 +78,52 @@ pub fn string(st: String, vars: Vec<(String, String)>) -> Vec<String> {
             }
         }
     }
+    /*for c in st.chars() {
+        match c {
+            '"' => {
+                if in_sin_quotes {
+                    out.push(c);
+                } else {
+                    if in_dub_quotes {
+                        in_dub_quotes = false;
+                    } else {
+                        in_dub_quotes = true;
+                    }
+                    //out.push(c); //do we want to keep the quotation marks?
+                }
+            },
+            '$' => {
+                if in_dub_quotes || in_sin_quotes {
+                    out.push(c);
+                } else {
+                    //deal with variable expansion
+                }
+            },
+            '\'' => {
+                if in_dub_quotes {
+                    out.push(c);
+                } else {
+                    if in_sin_quotes {
+                        in_sin_quotes = false;
+                    } else {
+                        in_sin_quotes = true;
+                    }
+                    //out.push(c); //do we want to keep the quotation marks?
+                }
+            },
+            ' ' => {
+                if in_dub_quotes || in_sin_quotes {
+                    out.push(c);
+                } else {
+                    res.push(out.clone());
+                    out.clear();
+                }
+            },
+            _ => {
+                out.push(c);
+            },
+        };
+    }*/
     return res;
 }
 
@@ -86,7 +132,7 @@ pub fn path(st: &str) -> String {
     let mut res = String::new();
     let home: String = match env::var("HOME") { // os::homedir returns a path, this retruns a string
         Ok(val) => val,
-        Err(..) => "Home directory not set".to_string(), // will return this string
+        Err(..) => "Home directory not set".to_string() // will return this string
     };
     if st.starts_with("~/") {
         res.push_str(home.as_ref());

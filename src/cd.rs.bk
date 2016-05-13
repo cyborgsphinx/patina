@@ -9,7 +9,7 @@ pub fn ch_dir(dest: &PathBuf) -> i32 {
         Err(..) => {
             println!("Failed changing directory");
             1
-        }
+        },
     }
 }
 
