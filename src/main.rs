@@ -1,36 +1,34 @@
 extern crate patina;
-extern crate libc;
 extern crate glob;
 extern crate copperline;
+extern crate nix;
 
 use std::process;
 use std::path::PathBuf;
 use std::env;
-use std::convert::From;
-use std::convert::AsRef;
+use std::convert::{From, AsRef};
 
 use copperline::{Copperline, Error};
 
-use patina::{execute, prompt, cd, signals};
+use nix::sys::signal::{SIGINT, SIGQUIT, SIGSTOP, SIGTTIN, SIGTTOU, SIGCHLD};
+use nix::sys::signal::{SigHandler, SigAction, SigSet};
+use nix::sys::signal::SaFlag;
+
+use patina::{execute, prompt, cd};
 
 #[cfg(not(test))]
 fn main() {
     println!("Patina Shell\nPrealpha");
 
+    let action = SigAction::new(SigHandler::SigDfl, SaFlag::empty(), SigSet::empty());
     unsafe { // signals to be ignored
-        self::libc::funcs::posix01::signal::signal(self::libc::consts::os::posix88::SIGINT,
-                                                signals::catch_signal as u64); //i'd prefer this
-        self::libc::funcs::posix01::signal::signal(self::libc::consts::os::posix88::SIGQUIT,
-                                                signals::catch_signal as u64);
-        self::libc::funcs::posix01::signal::signal(20i32, //SIGTSTP
-                                                signals::catch_signal as u64);
-        self::libc::funcs::posix01::signal::signal(26i32, //SIGTTIN
-                                                signals::catch_signal as u64);
-        self::libc::funcs::posix01::signal::signal(27i32, //SIGTTOU
-                                                signals::catch_signal as u64);
-        self::libc::funcs::posix01::signal::signal(18i32, //SIGCHLD
-                                                signals::catch_signal as u64);
-    }   // c_int == i32
+        let _ = nix::sys::signal::sigaction(SIGINT, &action);
+        let _ = nix::sys::signal::sigaction(SIGQUIT, &action);
+        let _ = nix::sys::signal::sigaction(SIGSTOP, &action);
+        let _ = nix::sys::signal::sigaction(SIGTTIN, &action);
+        let _ = nix::sys::signal::sigaction(SIGTTOU, &action);
+        let _ = nix::sys::signal::sigaction(SIGCHLD, &action);
+    }
 
     let mut locals: Vec<(String, String)> = Vec::new();
     let mut copper = Copperline::new();
@@ -39,11 +37,11 @@ fn main() {
     loop {
 
         let input: String;
-        match copper.read_line(prompt::get_prompt(stat as isize).as_ref()){
+        match copper.read_line_ascii(prompt::get_prompt(stat as isize).as_ref()){
             Ok(st) => input = st,
             Err(Error::EndOfFile) => break,
             Err(Error::UnsupportedTerm) => {println!("Error: Unsupporter terminal"); break;},
-            Err(Error::InvalidUTF8) => {println!("Can't handle invalid UTF8 yet"); break;},
+            Err(Error::Cancel) => {println!("Error: Cancel encountered"); break;},
             Err(Error::ErrNo(n)) => {println!("Error {:?}: failing", n); break;},
         }
 
@@ -116,15 +114,11 @@ fn main() {
             },
             "fg" => {//not functional
                 //process::Process::kill(args[0].parse::<i32>().unwrap(), 25);//SIGCONT == 25
-                unsafe {
-                    self::libc::funcs::posix88::signal::kill(args[0].parse::<i32>().unwrap(), 25);
-                }
+                let _ = nix::sys::signal::kill(args[0].parse::<i32>().unwrap(), 25);
             },
             "bg" => {//not functional
                 //process::Process::kill(args[0].parse::<i32>().unwrap(), 25);//pid_t == i32
-                unsafe {
-                    self::libc::funcs::posix88::signal::kill(args[0].parse::<i32>().unwrap(), 25);
-                }
+                let _ = nix::sys::signal::kill(args[0].parse::<i32>().unwrap(), 25);
             },
             _ => {//no forking yet
                 stat = execute::run(cmd, args);
