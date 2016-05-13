@@ -9,6 +9,6 @@ license = "MIT"
 name = "patina"
 
 [dependencies]
-glob = "0.2.10"
+glob = "0.2"
 copperline = "0.3"
 nix = "0.5"

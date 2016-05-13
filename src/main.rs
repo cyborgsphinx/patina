@@ -4,13 +4,12 @@ extern crate copperline;
 extern crate nix;
 
 use std::process;
-use std::path::PathBuf;
 use std::env;
 use std::convert::{From, AsRef};
 
 use copperline::{Copperline, Error};
 
-use nix::sys::signal::{SIGINT, SIGQUIT, SIGSTOP, SIGTTIN, SIGTTOU, SIGCHLD};
+use nix::sys::signal::{SIGINT, SIGQUIT, SIGTSTP, SIGTTIN, SIGTTOU, SIGCHLD};
 use nix::sys::signal::{SigHandler, SigAction, SigSet};
 use nix::sys::signal::SaFlag;
 
@@ -18,13 +17,24 @@ use patina::{execute, prompt, cd};
 
 #[cfg(not(test))]
 fn main() {
+    let home = match env::home_dir() {
+        Some(d) => d,
+        None => {
+            println!("Cannot find environment variable: home");
+            return;
+        }
+    };
     println!("Patina Shell\nPrealpha");
 
-    let action = SigAction::new(SigHandler::SigDfl, SaFlag::empty(), SigSet::empty());
+    extern "C" fn handle_signal(_signo: i32) {
+        println!("Caught a signal");
+    }
+
+    let action = SigAction::new(SigHandler::Handler(handle_signal), SaFlag::empty(), SigSet::empty());
     unsafe { // signals to be ignored
         let _ = nix::sys::signal::sigaction(SIGINT, &action);
         let _ = nix::sys::signal::sigaction(SIGQUIT, &action);
-        let _ = nix::sys::signal::sigaction(SIGSTOP, &action);
+        let _ = nix::sys::signal::sigaction(SIGTSTP, &action);
         let _ = nix::sys::signal::sigaction(SIGTTIN, &action);
         let _ = nix::sys::signal::sigaction(SIGTTOU, &action);
         let _ = nix::sys::signal::sigaction(SIGCHLD, &action);
@@ -34,8 +44,8 @@ fn main() {
     let mut copper = Copperline::new();
 
     let mut stat = 0;
-    loop {
 
+    loop {
         let input: String;
         match copper.read_line_ascii(prompt::get_prompt(stat as isize).as_ref()){
             Ok(st) => input = st,
@@ -51,7 +61,8 @@ fn main() {
 
         match cmd.as_ref() {
             "exit" => {break},
-            "echo" => { //work on this
+            // leaving echo to system for now
+            /*"echo" => {
                 match args[0] {
                     "-n" => {
                         for st in args[1..].iter() {
@@ -66,8 +77,8 @@ fn main() {
                     },
                 };
                 stat = 0;
-            },
-            "set" => {
+            },*/
+            "set" => { //not functional
                 match args[0].as_ref() {
                     "-x" => {
                         let (key, value) = (args[1].to_string(), args[2].to_string());
@@ -94,17 +105,11 @@ fn main() {
                 stat = 0;
             },
             "cd" => {
-                //TODO implement flags
-                let chdir: PathBuf;
                 if args.is_empty() {    //cd called alone; equivalent to cd ~
-                    chdir = match env::home_dir() {
-                        Some(d) => {d},
-                        None => {panic!("You have no home")},   //TODO improve
-                    };
+                    stat = cd::ch_dir(&home);
                 } else {
-                    chdir = From::from(args[0]);
+                    stat = cd::ch_dir(&From::from(args[0]));
                 }
-                stat = cd::ch_dir(chdir);
             },
             "clear" => {
                 match copper.clear_screen() {
@@ -113,11 +118,9 @@ fn main() {
                 };
             },
             "fg" => {//not functional
-                //process::Process::kill(args[0].parse::<i32>().unwrap(), 25);//SIGCONT == 25
                 let _ = nix::sys::signal::kill(args[0].parse::<i32>().unwrap(), 25);
             },
             "bg" => {//not functional
-                //process::Process::kill(args[0].parse::<i32>().unwrap(), 25);//pid_t == i32
                 let _ = nix::sys::signal::kill(args[0].parse::<i32>().unwrap(), 25);
             },
             _ => {//no forking yet
