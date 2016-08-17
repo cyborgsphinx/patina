@@ -43,8 +43,8 @@ pub fn run(cmd: &str, args: Vec<&str>) -> i32 {
                 Some(num) => num,
                 None => {
                     match val.signal() {
-                        Some(sig) => sig * -1,    //give signal value
-                        None => -1,             //something went weird
+                        Some(sig) => sig + 128,   //standard for caught signals
+                        None => -1,               //something went weird
                     }
                 }
             }
