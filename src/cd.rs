@@ -21,14 +21,14 @@ mod tests {
     #[test]
     fn test_ok() {
         let dir = Path::new("/tmp");
-        let num = ch_dir(dir.to_path_buf());
+        let num = ch_dir(&dir.to_path_buf());
         assert_eq!(num, 0);
     }
 
     #[test]
     fn test_err() {
         let dir = Path::new("/tup");
-        let num = ch_dir(dir.to_path_buf());
+        let num = ch_dir(&dir.to_path_buf());
         assert_eq!(num, 1);
     }
 }

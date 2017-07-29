@@ -18,9 +18,10 @@ pub fn get_prompt(status: isize) -> String {
         Some(d) => d,
         None => OsStr::new("/"),
     };
-    let dispdir = match cwd == home {
-        true => "~",
-        false => dir.to_str().unwrap_or("dir not found"),
+    let dispdir = if cwd == home {
+        "~"
+    } else {
+        dir.to_str().unwrap_or("dir not found")
     };
     let mut pro = String::new();
     if status != 0 {
@@ -35,7 +36,6 @@ mod tests {
     use prompt::get_prompt;
     use std::env;
     use std::string::String;
-    use std::path;
     // make constant directory
     use std::path::Path;
 

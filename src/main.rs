@@ -3,17 +3,27 @@ extern crate glob;
 extern crate copperline;
 extern crate nix;
 
-use std::process;
+#[cfg(not(test))]
+use std::collections::HashMap;
+#[cfg(not(test))]
+use std::convert::From;
+#[cfg(not(test))]
 use std::env;
-use std::convert::{From, AsRef};
+#[cfg(not(test))]
+use std::process;
 
+#[cfg(not(test))]
 use copperline::{Copperline, Error};
 
+#[cfg(not(test))]
 use nix::sys::signal::{SIGINT, SIGQUIT, SIGTSTP, SIGTTIN, SIGTTOU, SIGCHLD};
+#[cfg(not(test))]
 use nix::sys::signal::{SigHandler, SigAction, SigSet};
+#[cfg(not(test))]
 use nix::sys::signal::SaFlag;
 
-use patina::{execute, prompt, cd};
+#[cfg(not(test))]
+use patina::{cd, execute, parse, prompt};
 
 #[cfg(not(test))]
 fn main() {
@@ -43,14 +53,14 @@ fn main() {
         let _ = nix::sys::signal::sigaction(SIGCHLD, &action);
     }
 
-    let mut locals: Vec<(String, String)> = Vec::new();
+    let mut locals: HashMap<String, String> = HashMap::new();
     let mut copper = Copperline::new();
 
     let mut stat = 0;
 
     loop {
         let input: String;
-        match copper.read_line_ascii(prompt::get_prompt(stat as isize).as_ref()) {
+        match copper.read_line_ascii(prompt::get_prompt(stat as isize).as_str()) {
             Ok(st) => input = st,
             Err(Error::EndOfFile) => break,
             Err(Error::UnsupportedTerm) => {
@@ -70,17 +80,17 @@ fn main() {
         if input.trim() == "" {
             continue;
         }
-        let mut args: Vec<&str> = input.trim().split_whitespace().collect();
+        let mut args = parse::line(input, &locals);
         let cmd = args.remove(0); // take args[0] out, put it in cmd, move eveything in args left
 
-        match cmd.as_ref() {
+        match cmd.as_str() {
             "exit" => break,
             // leaving echo to system for now
             // "echo" => {
             // },
             "set" => {
                 // not functional
-                match args[0].as_ref() {
+                match args[0].as_str() {
                     "-x" => {
                         let (key, value) = (args[1].to_string(), args[2].to_string());
                         env::set_var(&key, &value);
@@ -89,18 +99,11 @@ fn main() {
                         env::remove_var(&args[1]);
                     }
                     "-e" => {
-                        let mut i: usize = 0;
-                        while i < locals.len() {
-                            if locals[i].0 == args[1] {
-                                locals.remove(i);
-                                break;
-                            }
-                            i += 1;
-                        }
+                        let _ = locals.remove(&args[0].to_string());
                     }
                     _ => {
                         let (key, value) = (args[0].to_string(), args[1].to_string());
-                        locals.push((key, value));
+                        locals.insert(key, value);
                     }
                 };
                 stat = 0;
@@ -110,7 +113,7 @@ fn main() {
                     // cd called alone; equivalent to cd ~
                     stat = cd::ch_dir(&home);
                 } else {
-                    stat = cd::ch_dir(&From::from(args[0]));
+                    stat = cd::ch_dir(&From::from(&args[0]));
                 }
             }
             "clear" => {
@@ -129,7 +132,8 @@ fn main() {
             }
             _ => {
                 // no forking yet
-                stat = execute::run(cmd, args);
+                let args = args.iter().map(|x| x.as_str()).collect();
+                stat = execute::run(cmd.as_str(), args);
             }
         };
     }

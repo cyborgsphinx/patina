@@ -4,7 +4,6 @@ use std::process::Command;
 use std::os::unix::process::ExitStatusExt;
 
 ///Runs a command with given arguments.
-///Returns the status, or the negative of the signal sent that caused termination.
 ///This is until I have a more firm grasp on signals and such.
 pub fn run(cmd: &str, args: Vec<&str>) -> i32 {
     let options = MatchOptions {
